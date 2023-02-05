@@ -1,0 +1,7 @@
+{
+  "name": "chirp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
