@@ -2,27 +2,30 @@
   <div id="header">
     <div id="app-bar">
       <div id="logo">
-        <img src="assets/logo/chirpLogo.png" alt="" />
+        <img src="assets/logo/chirpLogo.png" alt=""/>
       </div>
       <div></div>
     </div>
 
     <h1>Sign Up</h1>
-    <p>he most valuable conversations happen  <br> when we listen. </p>
+    <p>he most valuable conversations happen <br> when we listen. </p>
   </div>
   <div class="wrapper">
     <ion-card class="form-wrapper">
-      <ion-card-content>
-        <ion-item>
-          <ion-icon name="mail"></ion-icon>
-          <ion-input type="text" placeholder="Email"></ion-input>
+      <form [formGroup]="credentials" >
+        <ion-card-content>
+          <ion-item>
+            <ion-icon name="mail"></ion-icon>
+            <ion-input type="text" formControlName="email" placeholder="Email"></ion-input>
           </ion-item>
           <ion-item>
             <ion-icon name="lock-closed"></ion-icon>
-            <ion-input type="password" placeholder="Password"></ion-input>
+            <ion-input type="password" formControlName="password" placeholder="Password"></ion-input>
           </ion-item>
-        <ion-button expand="block">Sign in</ion-button>
-      </ion-card-content>
+          <ion-button expand="block" [disabled]="!credentials.valid" (click)="login()">Sign in
+          </ion-button>
+        </ion-card-content>
+      </form>
     </ion-card>
 
     <div class="line-text">
