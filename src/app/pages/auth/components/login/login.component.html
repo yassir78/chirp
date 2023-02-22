@@ -7,8 +7,10 @@
       <div></div>
     </div>
 
-    <h1>Sign Up</h1>
-    <p>he most valuable conversations happen <br> when we listen. </p>
+    <h1 class="title">Sign In</h1>
+    <div class="ion-margin-top title-text">
+      <ion-text>The most valuable conversations happen when we listen. </ion-text>
+    </div>
   </div>
   <div class="wrapper">
     <ion-card class="form-wrapper">
@@ -22,8 +24,19 @@
             <ion-icon name="lock-closed"></ion-icon>
             <ion-input type="password" formControlName="password" placeholder="Password"></ion-input>
           </ion-item>
-          <ion-button expand="block" [disabled]="!credentials.valid" (click)="login()">Sign in
-          </ion-button>
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" [disabled]="!credentials.valid" (click)="login()">Sign in
+              </ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <div class="ion-text-end">
+                <ion-text color="medium" class="forgot-password" (click)="forgotPassword()">Forgot password?</ion-text>
+              </div>
+            </ion-col>
+          </ion-row>
         </ion-card-content>
       </form>
     </ion-card>
@@ -48,5 +61,13 @@
         </div>
       </ion-card-content>
     </ion-card>
+
+    <ion-row>
+      <ion-col>
+        <div class="ion-text-center">
+          <ion-text color="medium">Don't have an existant account? <strong (click)="signUp()">Sign up</strong></ion-text>
+        </div>
+      </ion-col>
+    </ion-row>
   </div>
 </ion-content>

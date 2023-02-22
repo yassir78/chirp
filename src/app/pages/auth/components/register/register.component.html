@@ -1,3 +1,61 @@
-<p>
-  register works!
-</p>
+<ion-content>
+  <div id="header">
+    <div id="app-bar">
+      <div id="logo">
+        <img src="assets/logo/chirpLogo.png" alt=""/>
+      </div>
+      <div></div>
+    </div>
+
+    <h1 class="title">Sign Up</h1>
+    <div class="ion-margin-top title-text">
+      <ion-text>The most valuable conversations happen when we listen. </ion-text>
+    </div>
+  </div>
+  <div class="wrapper">
+    <ion-card class="form-wrapper">
+      <form [formGroup]="credentials" >
+        <ion-card-content>
+          <ion-item>
+            <ion-icon name="mail"></ion-icon>
+            <ion-input type="text" formControlName="email" placeholder="Email"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="at-outline"></ion-icon>
+            <ion-input type="text" placeholder="username"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="person-outline"></ion-icon>
+            <ion-input type="text" formControlName="firstname" placeholder="firstname"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="person-outline"></ion-icon>
+            <ion-input type="text" formControlName="lastname" placeholder="lastname"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="lock-closed"></ion-icon>
+            <ion-input type="password" formControlName="password" placeholder="Password"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="lock-closed"></ion-icon>
+            <ion-input type="password" formControlName="confirmPassword" placeholder="Confirm password"></ion-input>
+          </ion-item>
+          <ion-row>
+            <ion-col>
+              <ion-button expand="block" [disabled]="true" (click)="register()">Sign up
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </form>
+    </ion-card>
+
+    <ion-row>
+      <ion-col>
+        <div class="ion-text-center">
+          <ion-text color="medium">Already have an account? <strong (click)="signIn()">Sign In</strong></ion-text>
+        </div>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-content>

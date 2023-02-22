@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
   }
 
   async googleSignup() {
+    console.log("before google auth")
     const googleUser = await GoogleAuth.signIn();
     console.log("googleUser")
     console.log(googleUser);
@@ -58,6 +59,14 @@ export class LoginComponent implements OnInit {
     response.user ?
       await this.router.navigateByUrl('/tabs') :
       await this.showAlert("Ops", Utils.getErrorMessage(response.error));
+  }
+
+  async signUp() {
+    await this.router.navigateByUrl('/auth/register');
+  }
+  
+  async forgotPassword() {
+    await this.router.navigateByUrl('/auth/register');
   }
 
   private cleanForm() {

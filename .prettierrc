@@ -1,0 +1,30 @@
+{
+	"endOfLine": "lf",
+	"useTabs": true,
+	"insertPragma": false,
+	"printWidth": 160,
+	"tabWidth": 4,
+	"trailingComma": "es5",
+	"semi": true,
+	"parser": "typescript",
+	"plugins": [
+		"prettier-plugin-sort-json"
+	],
+	"overrides": [
+		{
+			"files": "*.json",
+			"options": {
+				"parser": "json"
+			}
+		},
+		{
+			"files": "*.scss",
+			"options": {
+				"parser": "scss"
+			}
+		}
+	],
+	"jsonRecursiveSort": true,
+	"quoteProps": "as-needed",
+	"sortImports": false
+}
