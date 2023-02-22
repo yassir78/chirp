@@ -1,3 +1,5 @@
+import {AbstractControl} from "@angular/forms";
+
 export class Utils {
 
   private static readonly PASSWORD_MIN_LENGTH_ERROR = 'Firebase: Password should be at least 6 characters (auth/weak-password).';
@@ -12,5 +14,9 @@ export class Utils {
     // @ts-ignore
     return errorMessages[error] || error;
 
+  }
+
+  static stringTypeCheck(control: any): boolean{
+    return typeof control.value === 'string';
   }
 }

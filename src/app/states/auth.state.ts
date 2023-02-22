@@ -1,24 +1,17 @@
 import {Injectable} from "@angular/core";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
+import {User} from "../models/user";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthState {
-  private updating$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  private currentUser$: BehaviorSubject<any> = new BehaviorSubject(null);
-
-  isUpdating$() {
-    return this.updating$.asObservable();
-  }
-
-  setUpdating(updating: boolean) {
-    this.updating$.next(updating);
-  }
-
-  getCurrentUser$() {
-    return this.currentUser$.asObservable();
-  }
-
-  setCurrentUser(user: any) {
+  private currentUser$: BehaviorSubject<User> = new BehaviorSubject({});
+  set currentUser(user: User) {
     this.currentUser$.next(user);
+  }
+
+  getCurrentUser(): Observable<User> {
+    return this.currentUser$.asObservable();
   }
 }

@@ -1,10 +1,8 @@
-import {User} from "../models/user";
 
 export class LoginResponseDto {
 
   private _user: any | undefined;
   private _error: string | undefined;
-
 
   constructor() {
 

@@ -23,7 +23,8 @@ export class AuthService {
   async login(email: string, password: string): Promise<LoginResponseDto> {
     const response = new LoginResponseDto();
     try {
-      response.user = await signInWithEmailAndPassword(this.auth, email, password);
+      const {user} = await signInWithEmailAndPassword(this.auth, email, password);
+      response.user = user;
     } catch (e: any) {
       response.error = e.message;
       response.user = null;

@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from "@angular/forms";
 import {AlertController, LoadingController} from "@ionic/angular";
 import {Router} from "@angular/router";
-import {AuthService} from "../../../../services/auth.service";
 import {Utils} from "../../../../helpers/Utils";
+import {AuthFacade} from "../../../../facades/auth.facade";
+import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
+import {isPlatform} from "@ionic/angular";
+
+const emailValidators = [Validators.required, Validators.email];
+const passwordValidators = Validators.required;
 
 @Component({
   selector: 'app-login',
@@ -13,16 +18,26 @@ import {Utils} from "../../../../helpers/Utils";
 export class LoginComponent implements OnInit {
 
   credentials = this.fb.group({
-    email: ['',Validators.compose([Validators.required,Validators.email])],
-    password: ['',Validators.required]
+    email: ['', emailValidators],
+    password: ['', passwordValidators]
   });
-  constructor(private fb:FormBuilder,
-              private loadingController:LoadingController,
-              private alertController:AlertController,
-              private router:Router,
-              private authService:AuthService
 
-              ) { }
+  constructor(private fb: FormBuilder,
+              private loadingController: LoadingController,
+              private alertController: AlertController,
+              private authFacade: AuthFacade,
+              private router: Router,
+  ) {
+    if (!isPlatform('capacitor')) {
+      GoogleAuth.initialize();
+    }
+  }
+
+  async googleSignup() {
+    const googleUser = await GoogleAuth.signIn();
+    console.log("googleUser")
+    console.log(googleUser);
+  }
 
   get email() {
     return this.credentials.get('email');
@@ -33,17 +48,25 @@ export class LoginComponent implements OnInit {
   }
 
   async login() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      message: 'Please wait...'
+    });
     await loading.present();
-    // @ts-ignore
-    const response = await this.authService.login(this.email.value,this.password!.value);
+    const response = await this.authFacade.login(this.email!.value!, this.password!.value!);
     await loading.dismiss();
+    this.cleanForm();
     response.user ?
       await this.router.navigateByUrl('/tabs') :
-      await this.showAlert("Oups", Utils.getErrorMessage(response.error));
+      await this.showAlert("Ops", Utils.getErrorMessage(response.error));
   }
 
-  ngOnInit() {}
+  private cleanForm() {
+    this.credentials.reset();
+
+  }
+
+  ngOnInit() {
+  }
 
   private async showAlert(invalidCredentials: string, pleaseCheckYourEmailAndPassword: string) {
     const alert = await this.alertController.create({

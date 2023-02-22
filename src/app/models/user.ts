@@ -5,6 +5,7 @@ export interface User {
   login?: String;
   email?: String;
   password?: String;
+  phoneNumber?: String;
   c_password?: String;
   image_profile?: String;
   storeCode?:String;

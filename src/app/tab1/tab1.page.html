@@ -5,6 +5,9 @@
     </ion-toolbar>
   </ion-header>
   <ion-button (click)="logout()">logout</ion-button>
+  <ion-text>
+    {{currentUser$ | async | json }}
+  </ion-text>
 
   <app-explore-container name="Tab 1 page">
 
