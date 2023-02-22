@@ -27,13 +27,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 
 * {
-    font-family: 'Ubuntu', sans-serif; 
+    font-family: 'Ubuntu', sans-serif;
 }
 
 .title {
-    font-size: 1.75rem;
+    font-size: 1.65rem;
+    margin-top: 1rem;
 }
 
 .title-text {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
+
+  & > * {
+    line-height: 1.65rem;
+  }
+}
+
+.gray-icon {
+  color: grey;
+  font-size: 1.35rem!important;
 }

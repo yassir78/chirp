@@ -31,10 +31,10 @@ export class RegisterComponent implements OnInit {
 
 
   async register() {
-    
+
   }
 
   async signIn() {
-    await this.router.navigateByUrl('/auth/register');
+    await this.router.navigateByUrl('/auth/login');
   }
 }
