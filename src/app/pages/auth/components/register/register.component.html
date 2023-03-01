@@ -9,40 +9,75 @@
 
     <span class="title">Sign Up</span>
     <div class="ion-margin-top title-text">
-      <ion-text>The most valuable conversations happen when we listen. </ion-text>
+      <ion-text>The most valuable conversations happen when we listen.</ion-text>
     </div>
   </div>
   <div class="wrapper">
     <ion-card class="form-wrapper">
-      <form [formGroup]="credentials" >
+      <form [formGroup]="credentials">
         <ion-card-content>
-          <ion-item>
+          <ion-item
+            [ngClass]="email!.touched && email!.invalid ? 'margin-bottom-3' : 'margin-bottom-15'"
+          >
             <ion-icon class="gray-icon" name="mail"></ion-icon>
-            <ion-input type="text" formControlName="email" placeholder="Email"></ion-input>
+            <ion-input
+              type="text" formControlName="email" placeholder="Email"></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-label color="danger" *ngIf="email!.touched && email!.invalid">
+            <ion-text *ngIf="email!.errors?.['required']">Email is required</ion-text>
+            <ion-text *ngIf="email!.errors?.['email']">Email is invalid</ion-text>
+          </ion-label>
+          <ion-item
+            [ngClass]="username!.touched && username!.invalid ? 'margin-bottom-3' : 'margin-bottom-15'"
+          >
             <ion-icon class="gray-icon" name="at-outline"></ion-icon>
-            <ion-input type="text" placeholder="username"></ion-input>
+            <ion-input type="text" formControlName="username" placeholder="username"></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-label color="danger" *ngIf="username!.touched && username!.invalid">
+            <ion-text *ngIf="username!.errors?.['required']">Username is required</ion-text>
+          </ion-label>
+          <ion-item
+            [ngClass]="firstname!.touched && firstname!.invalid ? 'margin-bottom-3' : 'margin-bottom-15'"
+          >
             <ion-icon class="gray-icon" name="person-outline"></ion-icon>
             <ion-input type="text" formControlName="firstname" placeholder="firstname"></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-label color="danger" *ngIf="firstname!.touched && firstname!.invalid">
+            <ion-text *ngIf="firstname!.errors?.['required']">Firstname is required</ion-text>
+          </ion-label>
+          <ion-item
+            [ngClass]="lastname!.touched && lastname!.invalid ? 'margin-bottom-3' : 'margin-bottom-15'"
+          >
             <ion-icon class="gray-icon" name="person-outline"></ion-icon>
             <ion-input type="text" formControlName="lastname" placeholder="lastname"></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-label color="danger" *ngIf="lastname!.touched && lastname!.invalid">
+            <ion-text *ngIf="lastname!.errors?.['required']">LastName is required</ion-text>
+          </ion-label>
+          <ion-item
+            [ngClass]="password!.touched && password!.invalid ? 'margin-bottom-3' : 'margin-bottom-15'"
+          >
             <ion-icon class="gray-icon" name="lock-closed"></ion-icon>
             <ion-input type="password" formControlName="password" placeholder="Password"></ion-input>
           </ion-item>
-          <ion-item>
+          <ion-label color="danger" *ngIf="password!.touched && password!.invalid">
+            <ion-text *ngIf="password!.errors?.['required']">Password is required</ion-text>
+          </ion-label>
+          <ion-item
+            [ngClass]="confirmPassword!.touched && confirmPassword!.invalid ? 'margin-bottom-3' : 'margin-bottom-15'"
+          >
             <ion-icon class="gray-icon" name="lock-closed"></ion-icon>
             <ion-input type="password" formControlName="confirmPassword" placeholder="Confirm password"></ion-input>
           </ion-item>
+          <ion-label color="danger"  *ngIf="confirmPassword!.touched && confirmPassword!.invalid">
+            <ion-text *ngIf="confirmPassword!.errors?.['required']">ConfirmPassword is required</ion-text>
+            <ion-text *ngIf="credentials?.errors?.['passwordMismatch']">Passwords do not match</ion-text>
+          </ion-label>
           <ion-row>
             <ion-col>
-              <ion-button expand="block" [disabled]="true" (click)="register()">Sign up
+              <ion-button expand="block"
+                          [disabled]="credentials.invalid"
+                          (click)="register()">Sign up
               </ion-button>
             </ion-col>
           </ion-row>

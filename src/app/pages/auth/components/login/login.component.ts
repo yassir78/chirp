@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {AlertController, LoadingController} from "@ionic/angular";
 import {Router} from "@angular/router";
-import {Utils} from "../../../../helpers/Utils";
+import {getErrorMessage, isEmptyObject, showAlert} from "../../../../helpers/Utils";
 import {AuthFacade} from "../../../../facades/auth.facade";
 import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
 import {isPlatform} from "@ionic/angular";
@@ -56,15 +56,15 @@ export class LoginComponent implements OnInit {
     const response = await this.authFacade.login(this.email!.value!, this.password!.value!);
     await loading.dismiss();
     this.cleanForm();
-    response.user ?
+    !response.error ?
       await this.router.navigateByUrl('/tabs') :
-      await this.showAlert("Ops", Utils.getErrorMessage(response.error));
+      await showAlert("Ops", getErrorMessage(response.error), this.alertController);
   }
 
   async signUp() {
     await this.router.navigateByUrl('/auth/register');
   }
-  
+
   async forgotPassword() {
     await this.router.navigateByUrl('/auth/register');
   }
@@ -77,12 +77,5 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
-  private async showAlert(invalidCredentials: string, pleaseCheckYourEmailAndPassword: string) {
-    const alert = await this.alertController.create({
-      header: invalidCredentials,
-      message: pleaseCheckYourEmailAndPassword,
-      buttons: ['OK']
-    });
-    await alert.present();
-  }
+
 }

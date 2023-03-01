@@ -1,9 +1,9 @@
 export interface User {
-  id?: number;
+  id?: string;
   nom?: String;
   prenom?: String;
   login?: String;
-  email?: String;
+  email?: string;
   password?: String;
   phoneNumber?: String;
   c_password?: String;
