@@ -1,0 +1,44 @@
+<ion-header class="home-header" #header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon slot="icon-only" name="menu-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <img class="chirp-logo" src="assets/logo/chirpLogo.png" alt="Chirp Logo" />
+      <!-- <ion-icon src="assets/logo/chirpLogo.png" size="large"></ion-icon> -->
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="pulse-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-segment [(ngModel)]="segment" mode="md" #segmentcontrol>
+  <ion-segment-button value="home">
+    <ion-label>Home</ion-label>
+  </ion-segment-button>
+  <ion-segment-button value="manage">
+    <ion-label>Manage chirps</ion-label>
+  </ion-segment-button>
+</ion-segment>
+
+<ion-content>
+
+  <div [hidden]="segment !== 'home'">
+    <chirp *ngFor="let chirp of chirps" [chirp]="chirp"></chirp>
+  </div>
+
+  <div [hidden]="segment !== 'manage'">
+      Manage tweets tab
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="pencil"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

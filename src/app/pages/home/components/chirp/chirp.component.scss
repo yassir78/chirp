@@ -1,0 +1,27 @@
+.wrapper {
+    .tweet-info {
+        font-size: 0.9rem;
+        
+        .name {
+            font-weight: 600;
+        }
+
+        .handle {
+            padding-left: 4px;
+            color: var(--ion-color-medium);
+        }
+    }   
+
+    .chirp-text {
+        // justify text
+        text-align: justify;
+        word-wrap: normal;
+        padding-right: 0.5rem;
+    }
+
+    .preview-img {
+        border: 1px solid var(--ion-color-light);
+        border-radius: 10px;
+        margin-top: 10px;
+    }
+}

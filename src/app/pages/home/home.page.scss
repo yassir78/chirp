@@ -1,0 +1,24 @@
+.home-header {
+
+    .chirp-logo {
+        height: 2.75rem;
+        margin: 0 auto;
+    }
+}
+
+ion-toolbar {
+    --border-style: none!important;
+}
+
+ion-header {
+    background: #fff!important;
+}
+
+ion-segment {
+    z-index: 10;
+    background: #fff;
+}
+
+ion-segment-button {
+    text-transform: none!important;
+}
