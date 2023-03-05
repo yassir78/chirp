@@ -1,11 +1,9 @@
-.home-header {
 
-    .chirp-logo {
-        height: 2.75rem;
-        margin: 0 auto;
-    }
+ion-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
 }
-
 ion-toolbar {
     --border-style: none!important;
 }

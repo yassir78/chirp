@@ -1,11 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
-import {AlertController, LoadingController} from "@ionic/angular";
+import {AlertController, isPlatform, LoadingController} from "@ionic/angular";
 import {Router} from "@angular/router";
-import {getErrorMessage, isEmptyObject, showAlert} from "../../../../helpers/Utils";
+import {getErrorMessage, showAlert} from "../../../../helpers/Utils";
 import {AuthFacade} from "../../../../facades/auth.facade";
 import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
-import {isPlatform} from "@ionic/angular";
 
 const emailValidators = [Validators.required, Validators.email];
 const passwordValidators = Validators.required;
@@ -34,10 +33,8 @@ export class LoginComponent implements OnInit {
   }
 
   async googleSignup() {
-    console.log("before google auth")
     const googleUser = await GoogleAuth.signIn();
-    console.log("googleUser")
-    console.log(googleUser);
+    await this.authFacade.googleLogin(googleUser);
   }
 
   get email() {
@@ -57,7 +54,7 @@ export class LoginComponent implements OnInit {
     await loading.dismiss();
     this.cleanForm();
     !response.error ?
-      await this.router.navigateByUrl('/tabs') :
+      await this.router.navigateByUrl('/app') :
       await showAlert("Ops", getErrorMessage(response.error), this.alertController);
   }
 

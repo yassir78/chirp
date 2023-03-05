@@ -22,11 +22,20 @@ export function compareStrings(string: string, string2: string): boolean {
 }
 
 export async function isEntityExistsBy(collectionName: string, param: string, value: string, fr: Firestore) {
-  // @ts-ignore
-  const foundedUser = await getDocs(collection(fr, collectionName), where(param, '==', value));
-  console.log({param, value, foundedUser});
-  if (!isEmpty(foundedUser.docs)) {
+  const entityRef = collection(fr, collectionName);
+  const q = query(entityRef, where(param, "==", value));
+  const docSnap = await getDocs(q);
+  if (!isEmpty(docSnap.docs)) {
     throw new Error(`User with ${param} : ${value} already exists`);
+  }
+}
+
+export async function isNotEntityExistsBy(collectionName: string, param: string, value: string, fr: Firestore) {
+  const entityRef = collection(fr, collectionName);
+  const q = query(entityRef, where(param, "==", value));
+  const docSnap = await getDocs(q);
+  if (isEmpty(docSnap.docs)) {
+    throw new Error(`User with ${param} : ${value} not exists`);
   }
 }
 
@@ -34,8 +43,6 @@ export async function getDocumentBy(collectionName: string, param: string, value
   const entityRef = collection(fr, collectionName);
   const q = query(entityRef, where(param, "==", value));
   const docSnap = await getDocs(q);
-  console.log(docSnap.docs[0])
-  console.log(docSnap.docs[0].data());
   return docSnap.docs[0].data();
 }
 

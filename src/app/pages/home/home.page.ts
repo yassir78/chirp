@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
+import {Observable} from "rxjs";
+import {User} from "../../models/user";
+import {AuthFacade} from "../../facades/auth.facade";
 
 @Component({
   selector: 'app-home',
@@ -7,6 +10,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomePage implements OnInit {
   segment = 'home';
+
+  auth = inject(AuthFacade);
+  connectedUser : Observable<User> | undefined;
   chirps: any[] = [
     {
       img: "https://i.pravatar.cc/150?img=1",
@@ -52,6 +58,9 @@ export class HomePage implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.connectedUser = this.auth.getCurrentUser();
   }
+
+
 
 }

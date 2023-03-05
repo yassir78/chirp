@@ -3,6 +3,7 @@ export interface RegisterRequestDto {
   password: string;
   username: string;
   firstname: string;
+  photoUrl: string;
   lastname: string;
 
 }

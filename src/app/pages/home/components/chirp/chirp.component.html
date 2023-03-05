@@ -1,11 +1,11 @@
 <ion-row class="wrapper">
-  <ion-col size="2">
-    <ion-avatar>
+  <ion-col size="2" class="ion-text-center">
+    <ion-avatar slot="">
       <ion-img [src]="chirp.img"></ion-img>
     </ion-avatar>
   </ion-col>
 
-  <ion-col size="10">
+  <ion-col  size="10" class="ion-padding-start">
     <ion-row class="tweet-info">
       <ion-col size="12">
         <span class="name">{{ chirp.name }}</span>
@@ -16,7 +16,7 @@
     <ion-row>
       <ion-col size="12">
         <div class="chirp-text" [innerHTML]="chirp.text"></div>
-        <img class="preview-img" [src]="chirp.attachment" *ngIf="chirp.attachment">
+        <img class="preview-img" [src]="chirp.attachment" *ngIf="chirp.attachment" alt="chirp attachment">
       </ion-col>
     </ion-row>
 
@@ -40,5 +40,5 @@
         </ion-button>
       </ion-col>
     </ion-row>
-  </ion-col>  
+  </ion-col>
 </ion-row>

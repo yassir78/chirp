@@ -82,10 +82,10 @@ export class RegisterComponent implements OnInit {
       email: this.email!.value!,
       password: this.password!.value!,
       username: this.username!.value!,
+      photoUrl: `https://ui-avatars.com/api/?name=${this.firstname!.value}+${this.lastname!.value}&background=0D8ABC&color=fff&size=128`,
       firstname: this.firstname!.value!,
       lastname: this.lastname!.value!,
     });
-    console.log(response)
     await loading.dismiss();
     this.cleanForm();
     !isEmptyObject(response.user) ?

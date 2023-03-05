@@ -11,7 +11,6 @@ export class ChirpComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log('chirp', this.chirp)
   }
 
 }

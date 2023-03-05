@@ -3,8 +3,11 @@ import {Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOu
 import {LoginResponseDto} from "../dtos/response/LoginResponseDto";
 import {RegisterRequestDto} from "../dtos/request/RegisterRequestDto";
 import {RegisterResponseDto} from "../dtos/response/RegisterResponseDto";
-import {doc, Firestore, setDoc} from "@angular/fire/firestore";
-import {getDocumentBy, isEntityExistsBy} from "../helpers/Utils";
+import {collectionData, doc, Firestore, setDoc} from "@angular/fire/firestore";
+import {getDocumentBy, isEntityExistsBy, isNotEntityExistsBy} from "../helpers/Utils";
+import {collection} from "@firebase/firestore";
+import {switchMap, tap} from "rxjs";
+import {User} from "../models/user";
 
 
 @Injectable({
@@ -18,11 +21,9 @@ export class AuthService {
   async register(registerRequest: RegisterRequestDto): Promise<RegisterResponseDto> {
     const response = new RegisterResponseDto();
     try {
-      const userCredential = await createUserWithEmailAndPassword(this.auth, registerRequest.email, registerRequest.password);
       await this.validate(registerRequest);
+      const userCredential = await createUserWithEmailAndPassword(this.auth, registerRequest.email, registerRequest.password);
       const uid = userCredential.user?.uid;
-      console.log('register request ');
-      console.log(registerRequest)
       await this.createNewDocument('users', uid, registerRequest);
       response.user = {
         id: uid,
@@ -45,14 +46,21 @@ export class AuthService {
 
   }
 
+
   get currentUser() {
     const user = this.auth.currentUser;
-    console.log(user)
-    const userDocRef = doc(this.fr, `users/${user!.uid}`);
-    console.log(userDocRef)
-    return userDocRef;
+    return doc(this.fr, `users/${user!.uid}`);
   }
 
+  getUserByEmail(email: string) {
+    const collectionRef = collection(this.fr, 'users');
+    const collectionData$ = collectionData(collectionRef, {idField: 'id'});
+    return collectionData$.pipe(
+      switchMap((users: User[]) => {
+        return users.filter((user: User) => user.email === email);
+      })
+    )
+  }
 
   private async validate(registerRequest: RegisterRequestDto) {
     await isEntityExistsBy('users', 'username', registerRequest.username, this.fr);
@@ -60,7 +68,11 @@ export class AuthService {
 
   }
 
-  private async createNewDocument(collection: string, id: string, data: any) {
+  isUserExistsByEmail(email: string) {
+    return isNotEntityExistsBy('users', 'email', email, this.fr);
+  }
+
+  async createNewDocument(collection: string, id: string, data: any) {
     return setDoc(doc(this.fr, collection, id), data);
   }
 
@@ -69,7 +81,5 @@ export class AuthService {
     return signOut(this.auth)
   }
 
-  async getFireStoreUser(email: string) {
-    return await getDocumentBy('users', 'email', email, this.fr)
-  }
+
 }

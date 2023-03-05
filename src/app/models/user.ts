@@ -15,6 +15,6 @@ export interface User {
   uid?: string;
   notificationToken?: String;
   displayName?: string;
-  photoURL?: string;
+  photoUrl?: string;
   emailVerified?: boolean;
 }
