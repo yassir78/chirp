@@ -1,7 +1,7 @@
 import {collection, query, Firestore, where} from '@firebase/firestore';
 
 import {AlertController} from "@ionic/angular";
-import {getDocs} from "@angular/fire/firestore";
+import {doc, getDocs, setDoc} from "@angular/fire/firestore";
 
 const PASSWORD_MIN_LENGTH_ERROR = 'Firebase: Password should be at least 6 characters (auth/weak-password).';
 const WRONG_PASSWORD_ERROR = 'Firebase: Error (auth/wrong-password).';
@@ -17,10 +17,15 @@ export function getErrorMessage(error: string): string {
   return errorMessages[error] || error;
 }
 
+export function debug(module:string,message:string){
+  console.log(`'%c Auth ${module} : ${message}`,'background: #222; color: #bada55');
+}
 export function compareStrings(string: string, string2: string): boolean {
   return string === string2;
 }
-
+export async function createNewDocument(collection: string, id: string, data: any,fr:Firestore) {
+  return setDoc(doc(fr, collection, id), data);
+}
 export async function isEntityExistsBy(collectionName: string, param: string, value: string, fr: Firestore) {
   const entityRef = collection(fr, collectionName);
   const q = query(entityRef, where(param, "==", value));

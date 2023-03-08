@@ -3,7 +3,7 @@ import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from "@angular/fire/auth-guard";
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['auth/login']);
-const redirectLoggedInToTabs = () => redirectLoggedInTo(['app']);
+const redirectLoggedInToApp = () => redirectLoggedInTo(['app']);
 const routes: Routes = [
   {
     path: '',
@@ -13,7 +13,7 @@ const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
-    ...canActivate(redirectLoggedInToTabs)
+    ...canActivate(redirectLoggedInToApp)
   },
 
 ];

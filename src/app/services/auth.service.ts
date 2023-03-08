@@ -1,10 +1,16 @@
 import {inject, Injectable} from "@angular/core";
-import {Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from '@angular/fire/auth';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut
+} from '@angular/fire/auth';
 import {LoginResponseDto} from "../dtos/response/LoginResponseDto";
 import {RegisterRequestDto} from "../dtos/request/RegisterRequestDto";
 import {RegisterResponseDto} from "../dtos/response/RegisterResponseDto";
 import {collectionData, doc, Firestore, setDoc} from "@angular/fire/firestore";
-import {getDocumentBy, isEntityExistsBy, isNotEntityExistsBy} from "../helpers/Utils";
+import {createNewDocument, getDocumentBy, isEntityExistsBy, isNotEntityExistsBy} from "../helpers/Utils";
 import {collection} from "@firebase/firestore";
 import {switchMap, tap} from "rxjs";
 import {User} from "../models/user";
@@ -24,7 +30,7 @@ export class AuthService {
       await this.validate(registerRequest);
       const userCredential = await createUserWithEmailAndPassword(this.auth, registerRequest.email, registerRequest.password);
       const uid = userCredential.user?.uid;
-      await this.createNewDocument('users', uid, registerRequest);
+      await this.createNewUser( uid, registerRequest);
       response.user = {
         id: uid,
         ...registerRequest
@@ -72,8 +78,8 @@ export class AuthService {
     return isNotEntityExistsBy('users', 'email', email, this.fr);
   }
 
-  async createNewDocument(collection: string, id: string, data: any) {
-    return setDoc(doc(this.fr, collection, id), data);
+  async createNewUser( id: string, data: any) {
+    await createNewDocument('users', id, data, this.fr);
   }
 
 

@@ -89,7 +89,7 @@ export class RegisterComponent implements OnInit {
     await loading.dismiss();
     this.cleanForm();
     !isEmptyObject(response.user) ?
-      await this.router.navigateByUrl('/tabs') :
+      await this.router.navigateByUrl('/app/home') :
       await showAlert("Ops", getErrorMessage(response.error), this.alertController);
   }
 

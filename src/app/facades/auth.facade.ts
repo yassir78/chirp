@@ -8,6 +8,7 @@ import {RegisterResponseDto} from "../dtos/response/RegisterResponseDto";
 import {Auth, onAuthStateChanged, signInWithCredential} from "@angular/fire/auth";
 import {User} from "../models/user";
 import {GoogleAuthProvider} from "@angular/fire/auth";
+import {debug} from "../helpers/Utils";
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class AuthFacade {
   constructor(private authService: AuthService, private authState: AuthState, private router: Router) {
     new Observable((subscriber) => {
       onAuthStateChanged(this.auth, (user) => {
+          console.log('this is a google authentication');
           subscriber.next(user);
         }
       )
@@ -31,6 +33,7 @@ export class AuthFacade {
           }
         )
       ))).subscribe(async (user) => {
+      console.log('%c Auth Facade : setting user state', 'background: #222; color: #bada55');
       this.setCurrentUser?.(user);
       await this.router.navigate(['/app/home']);
     });
@@ -69,8 +72,11 @@ export class AuthFacade {
     const {user} = await signInWithCredential(this.auth, credential);
     try {
       await this.authService.isUserExistsByEmail(googleUser.email);
+      console.log('%c Auth Facade/GoogleAuth : google user exists by email', 'background: #222; color: #bada55');
     } catch (e: any) {
-      await this.authService.createNewDocument('users', user.uid, {
+      debug('Facade/GoogleAuth', 'google user does not exist by email');
+      console.log('%c Auth Facade/GoogleAuth : google user does not exist by email', 'background: #222; color: #bada55');
+      await this.authService.createNewUser(user.uid, {
         email: googleUser.email ?? '',
         firstname: googleUser.givenName ?? '',
         lastname: googleUser.familyName ?? '',
