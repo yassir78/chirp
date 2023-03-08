@@ -1,0 +1,17 @@
+<ion-header class="home-header" id="main-content" #header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button>
+        <avatar [avatar]="(connectedUser | async)?.photoUrl"></avatar>
+      </ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      <logo/>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logoutUser()">
+        <ion-icon slot="icon-only" name="pulse-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

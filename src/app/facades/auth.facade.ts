@@ -5,7 +5,7 @@ import {map, Observable, switchMap, tap} from "rxjs";
 import {Router} from "@angular/router";
 import {RegisterRequestDto} from "../dtos/request/RegisterRequestDto";
 import {RegisterResponseDto} from "../dtos/response/RegisterResponseDto";
-import {Auth, onAuthStateChanged, signInWithCredential} from "@angular/fire/auth";
+import {Auth, onAuthStateChanged, sendPasswordResetEmail, signInWithCredential} from "@angular/fire/auth";
 import {User} from "../models/user";
 import {GoogleAuthProvider} from "@angular/fire/auth";
 import {debug} from "../helpers/Utils";
@@ -74,14 +74,18 @@ export class AuthFacade {
       await this.authService.isUserExistsByEmail(googleUser.email);
       console.log('%c Auth Facade/GoogleAuth : google user exists by email', 'background: #222; color: #bada55');
     } catch (e: any) {
-      debug('Facade/GoogleAuth', 'google user does not exist by email');
+      debug('Facade/GoogleAuth','google user does not exist by email');
       console.log('%c Auth Facade/GoogleAuth : google user does not exist by email', 'background: #222; color: #bada55');
-      await this.authService.createNewUser(user.uid, {
+      await this.authService.createNewUser( user.uid, {
         email: googleUser.email ?? '',
         firstname: googleUser.givenName ?? '',
         lastname: googleUser.familyName ?? '',
         photoUrl: googleUser.imageUrl ?? '',
       });
     }
+  }
+
+  async handleForgotPassword() {
+    await sendPasswordResetEmail(this.auth, 'yassir.acaf@gmail.com');
   }
 }
