@@ -1,7 +1,7 @@
 <app-menu></app-menu>
 
 <header ></header>
-<ion-segment class="margin-top-1 ion-margin-bottom" [(ngModel)]="segment" mode="md" #segmentcontrol>
+<ion-segment class="margin-top-1" [(ngModel)]="segment" mode="md" #segmentcontrol>
   <ion-segment-button value="home">
     <ion-label>Home</ion-label>
   </ion-segment-button>
@@ -10,7 +10,7 @@
   </ion-segment-button>
 </ion-segment>
 
-<ion-content class="ion-padding-horizontal">
+<ion-content>
   <div [hidden]="segment !== 'home'">
     <chirp *ngFor="let chirp of chirps" [chirp]="chirp"></chirp>
   </div>

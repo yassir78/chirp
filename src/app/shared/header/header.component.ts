@@ -10,17 +10,12 @@ import {User} from "../../models/user";
 })
 export class HeaderComponent implements OnInit {
 
-  @Input() avatar: string | undefined;
   auth = inject(AuthFacade);
   connectedUser : Observable<User> | undefined;
   constructor() { }
 
   ngOnInit() {
     this.connectedUser = this.auth.getCurrentUser();
-  }
-
-  async logoutUser() {
-    await this.auth.logout();
   }
 
 }

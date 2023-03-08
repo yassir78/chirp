@@ -9,6 +9,9 @@ export interface User {
   c_password?: String;
   image_profile?: String;
   storeCode?:String;
+  username?: String;
+  firstname?: String;
+  lastname?: String;
   num_tel?: String;
   active?: boolean;
   token?: String;
