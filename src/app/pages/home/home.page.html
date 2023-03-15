@@ -1,6 +1,6 @@
 <app-menu></app-menu>
 
-<header ></header>
+<header></header>
 <ion-segment class="margin-top-1 ion-margin-bottom" [(ngModel)]="segment" mode="md" #segmentcontrol>
   <ion-segment-button value="home">
     <ion-label>Home</ion-label>
@@ -10,6 +10,7 @@
   </ion-segment-button>
 </ion-segment>
 
+
 <ion-content class="ion-padding-horizontal">
   <div [hidden]="segment !== 'home'">
     <chirp *ngFor="let chirp of chirps" [chirp]="chirp"></chirp>
@@ -18,7 +19,7 @@
     Manage tweets tab
   </div>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button>
+    <ion-fab-button (click)="openModal()">
       <ion-icon name="pencil"></ion-icon>
     </ion-fab-button>
   </ion-fab>

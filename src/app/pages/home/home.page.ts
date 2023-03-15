@@ -2,6 +2,8 @@ import {Component, inject, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {User} from "../../models/user";
 import {AuthFacade} from "../../facades/auth.facade";
+import {ModalController} from "@ionic/angular";
+import {AddChirpComponent} from "../../shared/add-chirp/add-chirp.component";
 
 @Component({
   selector: 'app-home',
@@ -12,7 +14,8 @@ export class HomePage implements OnInit {
   segment = 'home';
 
   auth = inject(AuthFacade);
-  connectedUser : Observable<User> | undefined;
+  modalCtrl = inject(ModalController);
+  connectedUser: Observable<User> | undefined;
   chirps: any[] = [
     {
       img: "https://i.pravatar.cc/150?img=1",
@@ -55,12 +58,22 @@ export class HomePage implements OnInit {
     }
   ];
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
     this.connectedUser = this.auth.getCurrentUser();
   }
 
+  async openModal() {
+    const modal = await this.modalCtrl.create({
+      component: AddChirpComponent,
+    });
+    await modal.present();
+    const {data, role} = await modal.onWillDismiss();
+    if (role === 'confirm') {
+    }
+  }
 
 
 }

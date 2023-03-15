@@ -3,19 +3,23 @@ import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from "@angular/fire/auth-guard";
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['auth/login']);
-const redirectLoggedInToApp = () => redirectLoggedInTo(['app']);
+const redirectLoggedInToApp = () => redirectLoggedInTo(['app/home']);
 const routes: Routes = [
   {
-    path: '',
+    path: 'app',
     loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsModule),
-    ...canActivate(redirectUnauthorizedToLogin)
+    //...canActivate(redirectUnauthorizedToLogin)
   },
   {
     path: 'auth',
     loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
-    ...canActivate(redirectLoggedInToApp)
+    //...canActivate(redirectLoggedInToApp)
   },
-
+  {
+    path: '',
+    redirectTo: 'app/home',
+    pathMatch: 'full'
+  }
 ];
 
 @NgModule({

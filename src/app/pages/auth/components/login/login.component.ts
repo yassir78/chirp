@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
-import {AlertController, isPlatform, LoadingController} from "@ionic/angular";
+import {AlertController, isPlatform, LoadingController, ToastController} from "@ionic/angular";
 import {Router} from "@angular/router";
 import {getErrorMessage, showAlert} from "../../../../helpers/Utils";
 import {AuthFacade} from "../../../../facades/auth.facade";
 import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
 import {sendPasswordResetEmail} from "@angular/fire/auth";
+import {Observable} from "rxjs";
 
 const emailValidators = [Validators.required, Validators.email];
 const passwordValidators = Validators.required;
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
               private loadingController: LoadingController,
               private alertController: AlertController,
               private authFacade: AuthFacade,
+              private toastController: ToastController,
               private router: Router,
   ) {
     if (!isPlatform('capacitor')) {
@@ -54,8 +56,7 @@ export class LoginComponent implements OnInit {
     const response = await this.authFacade.login(this.email!.value!, this.password!.value!);
     await loading.dismiss();
     this.cleanForm();
-    !response.error ?
-      await this.router.navigateByUrl('/app') :
+    if (response.error)
       await showAlert("Ops", getErrorMessage(response.error), this.alertController);
   }
 
@@ -73,7 +74,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.cleanForm();
   }
+
 
 
 }

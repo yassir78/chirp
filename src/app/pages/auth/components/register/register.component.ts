@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {passwordMatchValidator} from "../../../../helpers/Validators/CompareValdator";
-import {AlertController, LoadingController} from "@ionic/angular";
+import {AlertController, LoadingController, ToastController} from "@ionic/angular";
 import {AuthFacade} from "../../../../facades/auth.facade";
 import {RegisterResponseDto} from "../../../../dtos/response/RegisterResponseDto";
 import {getErrorMessage, isEmptyObject, showAlert} from "../../../../helpers/Utils";
@@ -87,10 +87,11 @@ export class RegisterComponent implements OnInit {
       lastname: this.lastname!.value!,
     });
     await loading.dismiss();
+    console.log('loader is dissmissed');
     this.cleanForm();
-    !isEmptyObject(response.user) ?
-      await this.router.navigateByUrl('/app/home') :
+    if(response.error){
       await showAlert("Ops", getErrorMessage(response.error), this.alertController);
+    }
   }
 
   async signIn() {
@@ -100,4 +101,6 @@ export class RegisterComponent implements OnInit {
   private cleanForm() {
     this.credentials.reset();
   }
+
+
 }

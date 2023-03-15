@@ -1,7 +1,7 @@
 import {inject, Injectable} from "@angular/core";
 import {
   Auth,
-  createUserWithEmailAndPassword,
+  createUserWithEmailAndPassword, sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut
@@ -30,7 +30,11 @@ export class AuthService {
       await this.validate(registerRequest);
       const userCredential = await createUserWithEmailAndPassword(this.auth, registerRequest.email, registerRequest.password);
       const uid = userCredential.user?.uid;
-      await this.createNewUser( uid, registerRequest);
+      console.log('uid: ', uid)
+      await this.createNewUser(uid, {
+        ...registerRequest,
+      })
+      await sendEmailVerification(userCredential.user);
       response.user = {
         id: uid,
         ...registerRequest
@@ -38,6 +42,7 @@ export class AuthService {
     } catch (e: any) {
       response.error = e.message;
     }
+    console.log('the response is: ', response)
     return response;
   }
 
@@ -78,7 +83,7 @@ export class AuthService {
     return isNotEntityExistsBy('users', 'email', email, this.fr);
   }
 
-  async createNewUser( id: string, data: any) {
+  async createNewUser(id: string, data: any) {
     await createNewDocument('users', id, data, this.fr);
   }
 

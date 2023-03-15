@@ -6,6 +6,7 @@ import {LogoComponent} from "./logo/logo.component";
 import {AvatarComponent} from "./avatar/avatar.component";
 import {LazyLoadImageModule} from "ng-lazyload-image";
 import {HeaderComponent} from "./header/header.component";
+import {AddChirpComponent} from "./add-chirp/add-chirp.component";
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import {HeaderComponent} from "./header/header.component";
     MenuComponent,
     LogoComponent,
     AvatarComponent,
-    HeaderComponent
+    HeaderComponent,
+    AddChirpComponent
   ],
   imports: [
     CommonModule,
@@ -24,7 +26,8 @@ import {HeaderComponent} from "./header/header.component";
     MenuComponent,
     LogoComponent,
     AvatarComponent,
-    HeaderComponent
+    HeaderComponent,
+    AddChirpComponent
   ]
 })
 export class SharedModule {

@@ -7,7 +7,7 @@ import {IonicModule} from "@ionic/angular";
 
 const routes: Routes = [
   {
-    path: 'app',
+    path: '',
     component: TabsComponent,
     children: [
       {
@@ -20,11 +20,8 @@ const routes: Routes = [
       }
     ]
   },
-  {
-    path: 'app',
-    redirectTo: '/app/home',
-    pathMatch: 'full'
-  }
+
+
 ];
 
 
