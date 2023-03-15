@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Add Twee</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm()">Confirm</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding-horizontal">
+  <ion-grid>
+    <ion-row>
+      <ion-col>1</ion-col>
+      <ion-col size="10">
+        <ion-item>
+          <ion-label position="floating">What's happening?</ion-label>
+          <ion-textarea rows="4" maxlength="280"></ion-textarea>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-button expand="block" color="primary">
+    <ion-icon name="logo-twitter" slot="start"></ion-icon>
+    Tweet
+  </ion-button>
+</ion-content>
