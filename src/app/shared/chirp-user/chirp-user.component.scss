@@ -1,0 +1,24 @@
+.chirp-user {
+
+  avatar:first-child {
+    margin-right: 0.5rem;
+  }
+
+  ion-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 0.5rem;
+  }
+
+  ion-button {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  ion-button:last-child {
+    margin-left: 0.5rem;
+  }
+
+
+}
