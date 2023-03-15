@@ -7,6 +7,8 @@ import {AvatarComponent} from "./avatar/avatar.component";
 import {LazyLoadImageModule} from "ng-lazyload-image";
 import {HeaderComponent} from "./header/header.component";
 import {AddChirpComponent} from "./add-chirp/add-chirp.component";
+import {ChirpUserComponent} from "./chirp-user/chirp-user.component";
+import {ScrollingModule} from "@angular/cdk/scrolling";
 
 
 @NgModule({
@@ -15,12 +17,15 @@ import {AddChirpComponent} from "./add-chirp/add-chirp.component";
     LogoComponent,
     AvatarComponent,
     HeaderComponent,
-    AddChirpComponent
+    AddChirpComponent,
+    ChirpUserComponent
   ],
   imports: [
     CommonModule,
     IonicModule,
-    LazyLoadImageModule
+    LazyLoadImageModule,
+    ScrollingModule
+
   ],
   exports: [
     MenuComponent,

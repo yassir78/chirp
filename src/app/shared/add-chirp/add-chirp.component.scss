@@ -3,3 +3,41 @@ ion-label{
     color: #BDCDD6;
     margin-bottom: 0.5rem;
 }
+
+.add-chirp-avatar {
+    margin-top: 25px;
+}
+
+.add-chirp-select {
+  width: fit-content;
+  border: 1px solid rgb(207, 217, 222);
+  color: var(--ion-color-primary);
+  border-radius: 0.5rem;
+  height: 2rem;
+  padding-right: 0.5rem;
+  font-weight: bold;
+}
+
+.add-chirp-date {
+  display: flex;
+  align-items: center;
+  margin-left : 0.5rem;
+}
+
+.audience-row {
+  display: flex;
+  align-items: center;
+
+  & > *:first-child {
+    margin-right: 1rem;
+  }
+
+  & > * {
+
+    & > ion-icon {
+      margin-right: 0.25rem;
+    }
+    display: flex;
+    align-items: center;
+  }
+}

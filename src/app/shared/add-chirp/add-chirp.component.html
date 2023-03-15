@@ -3,20 +3,27 @@
     <ion-buttons slot="start">
       <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
     </ion-buttons>
-    <ion-title>Add Twee</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="confirm()">Confirm</ion-button>
-    </ion-buttons>
+    <ion-title>Add Chirp</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding-horizontal">
+<ion-content class="ion-padding-horizontal ion-padding-top">
   <ion-grid>
     <ion-row>
-      <ion-col>1</ion-col>
+      <ion-select class="add-chirp-select" interface="action-sheet" value="public">
+        <ion-select-option value="public">Public</ion-select-option>
+        <ion-select-option value="private">Private</ion-select-option>
+      </ion-select>
+      <ion-text class="add-chirp-date" color="medium">Last
+        modified: {{'1678888908959' | date:'dd-MM-YYYY'}}</ion-text>
+    </ion-row>
+    <ion-row>
+      <ion-col class="add-chirp-avatar">
+        <avatar [avatar]="(connectedUser | async)?.photoUrl"></avatar>
+      </ion-col>
       <ion-col size="10">
         <ion-item>
           <ion-label position="floating">What's happening?</ion-label>
-          <ion-textarea rows="4" maxlength="280"></ion-textarea>
+          <ion-textarea auto-grow="true" rows="1" maxlength="280"></ion-textarea>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -27,4 +34,18 @@
     <ion-icon name="logo-twitter" slot="start"></ion-icon>
     Tweet
   </ion-button>
+  <ion-row>
+    <ion-text><h3>Choose your audience</h3></ion-text>
+  </ion-row>
+  <ion-row class="audience-row">
+    <ion-text><ion-icon name="book"></ion-icon>Readers : 3</ion-text>
+    <ion-text><ion-icon name="pencil"></ion-icon>Editors : 5</ion-text>
+  </ion-row>
+  <ion-list lines="full">
+    <chirp-user/>
+    <chirp-user/>
+    <chirp-user/>
+    <chirp-user/>
+    <chirp-user/>
+  </ion-list>
 </ion-content>

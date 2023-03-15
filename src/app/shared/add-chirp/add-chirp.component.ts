@@ -1,5 +1,8 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, inject, Inject, OnInit} from '@angular/core';
 import {ModalController} from "@ionic/angular";
+import {AuthFacade} from "../../facades/auth.facade";
+import {Observable} from "rxjs";
+import {User} from "../../models/user";
 
 @Component({
   selector: 'app-add-chirp',
@@ -7,9 +10,15 @@ import {ModalController} from "@ionic/angular";
   styleUrls: ['./add-chirp.component.scss'],
 })
 export class AddChirpComponent implements OnInit {
-
+  auth = inject(AuthFacade);
   modalCtrl = Inject(ModalController);
-  constructor() { }
+  connectedUser: Observable<User> | undefined;
+
+  currentChirpVisibility = 'public';
+
+  constructor() {
+  }
+
   cancel() {
     return this.modalCtrl.dismiss(null, 'cancel');
   }
@@ -17,6 +26,10 @@ export class AddChirpComponent implements OnInit {
   confirm() {
     return this.modalCtrl.dismiss("hey", 'confirm');
   }
-  ngOnInit() {}
+
+  ngOnInit() {
+    this.connectedUser = this.auth.getCurrentUser();
+
+  }
 
 }
