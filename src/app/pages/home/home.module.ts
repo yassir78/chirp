@@ -9,6 +9,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { HomePage } from './home.page';
 import { ChirpComponent } from './components/chirp/chirp.component';
 import {SharedModule} from "../../shared/shared.module";
+import { ChirpDetailsComponent } from '../chirp-details/chirp-details.component';
 
 @NgModule({
     imports: [
@@ -18,6 +19,6 @@ import {SharedModule} from "../../shared/shared.module";
         HomePageRoutingModule,
         SharedModule
     ],
-  declarations: [HomePage,ChirpComponent]
+  declarations: [HomePage,ChirpComponent, ChirpDetailsComponent]
 })
 export class HomePageModule {}
