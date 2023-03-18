@@ -28,6 +28,9 @@ export class AuthState {
   set isDoneLogin(value: Boolean) {
     this.isDoneLogin$.next(value);
   }
+  getCurrentUserValue(): User {
+    return this.currentUser$.value;
+  }
 
   getisDoneLogin(): Observable<Boolean> {
     return this.isDoneLogin$.asObservable();

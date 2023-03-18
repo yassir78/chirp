@@ -12,8 +12,12 @@
 
 
 <ion-content>
-  <div [hidden]="segment !== 'home'">
-    <chirp *ngFor="let chirp of chirps" [chirp]="chirp"></chirp>
+
+  <div *ngIf="(isLoading$ | async)">
+    <chirp-list-skeleton></chirp-list-skeleton>
+  </div>
+  <div *ngIf="!(isLoading$ | async)" class="ion-text-center" [hidden]="segment !== 'home'">
+    <chirp *ngFor="let chirp of (chirps$|async)" [chirp]="chirp"/>
   </div>
   <div [hidden]="segment !== 'manage'">
     Manage tweets tab

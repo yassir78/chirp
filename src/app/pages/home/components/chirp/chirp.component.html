@@ -1,22 +1,22 @@
 <ion-row class="wrapper ion-padding-top ion-padding-horizontal">
   <ion-col size="2" class="ion-text-center">
     <ion-avatar slot="">
-      <ion-img [src]="chirp.img"></ion-img>
+      <ion-img [src]="chirp.creator!.photoUrl"></ion-img>
     </ion-avatar>
   </ion-col>
 
   <ion-col  size="10" class="ion-padding-start">
     <ion-row class="tweet-info">
-      <ion-col size="12">
-        <span class="name">{{ chirp.name }}</span>
-        <span class="handle">@{{ chirp.handle }}</span>
-        <span class="handle">{{ chirp.date * 1000 | date : 'shortDate' }}</span>
+      <ion-col size="12" style="text-align: left">
+        <span class="name">Alice Lee</span>
+        <span class="handle">@alicelee</span>
+        <span class="handle">2022-10-05</span>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size="12">
-        <div class="chirp-text" [innerHTML]="chirp.text"></div>
-        <img class="preview-img" [src]="chirp.attachment" *ngIf="chirp.attachment" alt="chirp attachment">
+        <div class="chirp-text" [innerHTML]="chirp.content"></div>
+        <img class="preview-img" *ngIf="chirp.imageUrl" [src]="chirp.imageUrl"  alt="chirp attachment">
       </ion-col>
     </ion-row>
 
@@ -28,13 +28,13 @@
         </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button fill="clear" color="medium" [color]="chirp.rechirp ? 'primary' : 'medium'" size="small">
+        <ion-button fill="clear" color="medium" [color]="true ? 'primary' : 'medium'" size="small">
           <ion-icon name="repeat-outline" slot="start"></ion-icon>
           {{ 5 }}
         </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button fill="clear" color="medium" [color]="chirp.liked ? 'primary' : 'medium'" size="small">
+        <ion-button fill="clear" color="medium" [color]="true ? 'primary' : 'medium'" size="small">
           <ion-icon name="heart-outline" slot="start"></ion-icon>
           {{ 10 }}
         </ion-button>

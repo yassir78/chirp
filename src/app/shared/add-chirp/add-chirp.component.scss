@@ -41,3 +41,49 @@ ion-label{
     align-items: center;
   }
 }
+ion-avatar {
+  width: 128px;
+  height: 128px;
+}
+
+.add-chirp-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.add-chirp-image-close{
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  z-index: 1;
+  border-radius: 0 0 0 0.5rem;
+  color: var(--ion-color-primary);
+  transform: scale(2);
+  padding: 0.5rem;
+  &:active {
+    transform: scale(1.5);
+  }
+}
+.add-chirp-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.add-chirp-image-button{
+  border-radius: 0.5rem;
+  color: var(--ion-color-primary);
+  font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.return-icon {
+  font-size: 1.5rem;
+}

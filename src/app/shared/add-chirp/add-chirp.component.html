@@ -1,51 +1,73 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
-    </ion-buttons>
-    <ion-title>Add Chirp</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-toolbar class="ion-padding-horizontal">
+  <ion-icon name="arrow-back-outline" class="return-icon"
+            slot="start" (click)="return()"></ion-icon>
+</ion-toolbar>
 <ion-content class="ion-padding-horizontal ion-padding-top">
-  <ion-grid>
-    <ion-row>
-      <ion-select class="add-chirp-select" interface="action-sheet" value="public">
-        <ion-select-option value="public">Public</ion-select-option>
-        <ion-select-option value="private">Private</ion-select-option>
-      </ion-select>
-      <ion-text class="add-chirp-date" color="medium">Last
-        modified: {{'1678888908959' | date:'dd-MM-YYYY'}}</ion-text>
-    </ion-row>
-    <ion-row>
-      <ion-col class="add-chirp-avatar">
-        <avatar [avatar]="(connectedUser | async)?.photoUrl"></avatar>
-      </ion-col>
-      <ion-col size="10">
-        <ion-item>
-          <ion-label position="floating">What's happening?</ion-label>
-          <ion-textarea auto-grow="true" rows="1" maxlength="280"></ion-textarea>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <form [formGroup]="chirpForm">
+    <ion-grid>
+      <ion-row>
+        <ion-select class="add-chirp-select" interface="action-sheet" value="public">
+          <ion-select-option value="public">Public</ion-select-option>
+          <ion-select-option value="private">Private</ion-select-option>
+        </ion-select>
+        <ion-text class="add-chirp-date" color="medium">Last
+          modified: {{'1678888908959' | date:'dd-MM-YYYY'}}</ion-text>
+      </ion-row>
+      <ion-row>
+        <ion-col class="add-chirp-avatar">
+          <avatar [avatar]="(connectedUser | async)?.photoUrl"></avatar>
+        </ion-col>
+        <ion-col size="10">
+          <ion-item>
+            <ion-label position="floating">What's happening?</ion-label>
+            <ion-textarea
+              formControlName="content"
+              auto-grow="true" rows="1" maxlength="280"></ion-textarea>
+          </ion-item>
+          <ion-button fill="clear" *ngIf="!imageUrl"
+                      (click)="selectImage()" class="add-chirp-image-button">
+            <ion-icon slot="start" name="image"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-card-content class="add-chirp-image-container">
+          <ion-icon name="close-circle" *ngIf="imageUrl"
+                    (click)="removeImage()"
+                    class="add-chirp-image-close"></ion-icon>
+          <div>
+            <img *ngIf="isImageUploading | async" [src]="defaultAvatar" class="add-chirp-image"/>
+            <img
+              class="add-chirp-image" *ngIf="imageUrl && (isImageUploading | async) === false; "
+              [src]="imageUrl"/>
+          </div>
+        </ion-card-content>
+      </ion-row>
+    </ion-grid>
+  </form>
 
 
-  <ion-button expand="block" color="primary">
+  <ion-button [disabled]="!chirpForm.valid" type="submit" (click)="onSubmit()"
+              expand="block" color="primary">
     <ion-icon name="logo-twitter" slot="start"></ion-icon>
-    Tweet
+    Chirp
   </ion-button>
   <ion-row>
     <ion-text><h3>Choose your audience</h3></ion-text>
   </ion-row>
   <ion-row class="audience-row">
-    <ion-text><ion-icon name="book"></ion-icon>Readers : 3</ion-text>
-    <ion-text><ion-icon name="pencil"></ion-icon>Editors : 5</ion-text>
+    <ion-text>
+      <ion-icon name="book"></ion-icon>
+      Readers : 3
+    </ion-text>
+    <ion-text>
+      <ion-icon name="pencil"></ion-icon>
+      Editors : 5
+    </ion-text>
   </ion-row>
   <ion-list lines="full">
+    <!--<chirp-user/>
     <chirp-user/>
     <chirp-user/>
     <chirp-user/>
-    <chirp-user/>
-    <chirp-user/>
+    <chirp-user/>-->
   </ion-list>
 </ion-content>

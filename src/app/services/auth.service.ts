@@ -1,19 +1,20 @@
 import {inject, Injectable} from "@angular/core";
 import {
   Auth,
-  createUserWithEmailAndPassword, sendEmailVerification,
-  sendPasswordResetEmail,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
   signInWithEmailAndPassword,
   signOut
 } from '@angular/fire/auth';
 import {LoginResponseDto} from "../dtos/response/LoginResponseDto";
 import {RegisterRequestDto} from "../dtos/request/RegisterRequestDto";
 import {RegisterResponseDto} from "../dtos/response/RegisterResponseDto";
-import {collectionData, doc, Firestore, setDoc} from "@angular/fire/firestore";
-import {createNewDocument, getDocumentBy, isEntityExistsBy, isNotEntityExistsBy} from "../helpers/Utils";
-import {collection} from "@firebase/firestore";
-import {switchMap, tap} from "rxjs";
+import {collectionData, doc, DocumentReference, Firestore, getDoc, getDocs} from "@angular/fire/firestore";
+import {createNewDocument, isEntityExistsBy, isNotEntityExistsBy} from "../helpers/Utils";
+import {collection, query, where} from "@angular/fire/firestore";
+import {from, switchMap} from "rxjs";
 import {User} from "../models/user";
+import {Chirp} from "../models/chirp";
 
 
 @Injectable({
@@ -65,12 +66,45 @@ export class AuthService {
 
   getUserByEmail(email: string) {
     const collectionRef = collection(this.fr, 'users');
-    const collectionData$ = collectionData(collectionRef, {idField: 'id'});
+    const q = query(collectionRef, where('email', '==', email));
+    const collectionData$ = collectionData(q, {idField: 'id'});
     return collectionData$.pipe(
       switchMap((users: User[]) => {
         return users.filter((user: User) => user.email === email);
       })
     )
+    /*const collectionRef = collection(this.fr, 'users');
+    const q = query(collectionRef, where('email', '==', email));
+    const collectionData$ = collectionData(q, {idField: 'id'});
+    return collectionData$.pipe(
+      switchMap((users) => {
+        console.log('users: ', users)
+        const userWithReferences = users[0];
+        const user: User = this.mapUser(userWithReferences);
+        console.log('user: ', user)
+        return [user];
+      }
+    ));*/
+  }
+
+  private mapUser(userWithReferences: any): User {
+    const chirps : Chirp[] = [];
+    userWithReferences.chirps.forEach(async (chirpRef: DocumentReference) => {
+      const path = chirpRef.path;
+      const chirpDoc = await getDoc(doc(this.fr, path));
+      const chirp = chirpDoc.data() as Chirp;
+      chirps.push(chirp);
+    });
+    return {
+      id: userWithReferences.id,
+      username: userWithReferences.username,
+      email: userWithReferences.email,
+      password: userWithReferences.password,
+      firstname: userWithReferences.firstname,
+      lastname: userWithReferences.lastname,
+      photoUrl: userWithReferences.photoUrl,
+      chirps: chirps
+    }
   }
 
   private async validate(registerRequest: RegisterRequestDto) {

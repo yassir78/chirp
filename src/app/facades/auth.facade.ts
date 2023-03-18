@@ -17,12 +17,14 @@ import {
 import {User} from "../models/user";
 import {debug} from "../helpers/Utils";
 import {ToastController} from "@ionic/angular";
+import {Firestore} from "@angular/fire/firestore";
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthFacade {
   private auth = inject(Auth);
+  private  = inject(Firestore);
   private toastController = inject(ToastController);
 
   constructor(private authService: AuthService, private authState: AuthState, private router: Router) {
@@ -49,7 +51,9 @@ export class AuthFacade {
     setIntervalAsync(async () => {
       const user = await this.auth.currentUser;
       if (user) {
-        await user.reload();
+        if(!user.emailVerified){
+          await user.reload();
+        }
       }
     }, 1000);
   }
@@ -100,7 +104,7 @@ export class AuthFacade {
     if (isEmailNotVerified) {
       const url = isFirstLogin ? '/auth/welcome' : '/auth/login';
       await this.router.navigate([url]);
-      if(!isFirstLogin) {
+      if (!isFirstLogin) {
         await this.handleEmailIsNotVerified(user);
       }
       await signOut(this.auth);

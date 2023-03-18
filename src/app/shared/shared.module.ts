@@ -9,6 +9,8 @@ import {HeaderComponent} from "./header/header.component";
 import {AddChirpComponent} from "./add-chirp/add-chirp.component";
 import {ChirpUserComponent} from "./chirp-user/chirp-user.component";
 import {ScrollingModule} from "@angular/cdk/scrolling";
+import {ReactiveFormsModule} from "@angular/forms";
+import {ChirpListSkeletonComponent} from "./chirp-list-skeleton/chirp-list-skeleton.component";
 
 
 @NgModule({
@@ -18,13 +20,15 @@ import {ScrollingModule} from "@angular/cdk/scrolling";
     AvatarComponent,
     HeaderComponent,
     AddChirpComponent,
-    ChirpUserComponent
+    ChirpUserComponent,
+    ChirpListSkeletonComponent
   ],
   imports: [
     CommonModule,
     IonicModule,
     LazyLoadImageModule,
-    ScrollingModule
+    ScrollingModule,
+    ReactiveFormsModule
 
   ],
   exports: [
@@ -32,7 +36,8 @@ import {ScrollingModule} from "@angular/cdk/scrolling";
     LogoComponent,
     AvatarComponent,
     HeaderComponent,
-    AddChirpComponent
+    AddChirpComponent,
+    ChirpListSkeletonComponent
   ]
 })
 export class SharedModule {

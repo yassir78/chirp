@@ -1,3 +1,5 @@
+import {Chirp} from "./chirp";
+
 export interface User {
   id?: string;
   nom?: String;
@@ -14,6 +16,7 @@ export interface User {
   lastname?: String;
   num_tel?: String;
   active?: boolean;
+  chirps?: Chirp[];
   token?: String;
   uid?: string;
   notificationToken?: String;
