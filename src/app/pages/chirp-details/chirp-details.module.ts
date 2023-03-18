@@ -4,7 +4,7 @@ import {ChirpDetailsComponent} from "./chirp-details.component";
 import {RouterModule} from "@angular/router";
 
 @NgModule({
-  declarations: [ChirpDetailsComponent],
+  declarations: [],
   imports: [
     CommonModule,
     RouterModule.forChild([
