@@ -24,6 +24,14 @@ export class HomePage implements OnInit {
   chirps$: Observable<Chirp[]> | undefined;
   isLoading$: Observable<Boolean> | undefined;
   chirps: Observable<Chirp> | undefined;
+  chirpTest = {
+    img: "https://i.pravatar.cc/150?img=1",
+    name: "John Doe",
+    handle: "johndoe",
+    date: "2022-10-01",
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    rechirp: true
+  };
 
   constructor() {
   }

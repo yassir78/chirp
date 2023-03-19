@@ -6,7 +6,9 @@
   <form [formGroup]="chirpForm">
     <ion-grid>
       <ion-row>
-        <ion-select class="add-chirp-select" interface="action-sheet" value="public">
+        <ion-select
+          (ionChange)="handleVisibilityChange($event)"
+          class="add-chirp-select" interface="action-sheet" value="private">
           <ion-select-option value="public">Public</ion-select-option>
           <ion-select-option value="private">Private</ion-select-option>
         </ion-select>
@@ -56,18 +58,22 @@
   <ion-row class="audience-row">
     <ion-text>
       <ion-icon name="book"></ion-icon>
-      Readers : 3
+      Readers : {{readerUsers.length}}
     </ion-text>
     <ion-text>
       <ion-icon name="pencil"></ion-icon>
-      Editors : 5
+      Editors : {{writerUsers.length}}
     </ion-text>
   </ion-row>
-  <ion-list lines="full">
-    <!--<chirp-user/>
-    <chirp-user/>
-    <chirp-user/>
-    <chirp-user/>
-    <chirp-user/>-->
+  <ion-list lines="full" class="ion-margin-top">
+    <chirp-user class="ion-margin-top" *ngFor=" let user of (users$ | async)"
+                [readerUsers]="readerUsers"
+                [writerUsers]="writerUsers"
+                [isPublic]="visibilityValue === 'public'"
+                (addUserToReaders)="addToReaders($event)"
+                (removeUserFromReaders)="removeFromReaders($event)"
+                (addUserToWriters)="addToWriters($event)"
+                (removeUserFromWriters)="removeFromWriters($event)"
+                [user]="user"/>
   </ion-list>
 </ion-content>

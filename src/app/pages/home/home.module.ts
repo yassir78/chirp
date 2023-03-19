@@ -10,6 +10,7 @@ import { HomePage } from './home.page';
 import { ChirpComponent } from './components/chirp/chirp.component';
 import {SharedModule} from "../../shared/shared.module";
 import { ChirpDetailsComponent } from '../chirp-details/chirp-details.component';
+import {ChirpDetailsModule} from "../chirp-details/chirp-details.module";
 
 @NgModule({
     imports: [
@@ -17,7 +18,8 @@ import { ChirpDetailsComponent } from '../chirp-details/chirp-details.component'
         FormsModule,
         IonicModule,
         HomePageRoutingModule,
-        SharedModule
+        SharedModule,
+        ChirpDetailsModule
     ],
   declarations: [HomePage,ChirpComponent, ChirpDetailsComponent]
 })

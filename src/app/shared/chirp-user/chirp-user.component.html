@@ -1,10 +1,18 @@
-<ion-item class="chirp-user">
-  <avatar></avatar>
-  <ion-label>Dimitri Leisering Francais oifjeiofjeijfieo jfziefj iezjfiozejfioz</ion-label>
-  <ion-button>
-    <ion-icon name="book"></ion-icon>
+<ion-item class="chirp-user ion-padding-bottom">
+  <avatar [avatar]="user!.photoUrl"></avatar>
+  <ion-label> {{user!.firstname }} {{user!.lastname}}</ion-label>
+  <ion-button
+    [fill]="existsInReaders() ? 'solid' : 'outline'"
+    *ngIf="!isPublic"
+    (click)="handleAddToReadersToggle()"
+  >
+    <ion-icon
+      name="book"></ion-icon>
   </ion-button>
-  <ion-button>
+  <ion-button
+    [fill]="existsInWriters() ? 'solid' : 'outline'"
+    (click)="handleAddToWritersToggle()"
+  >
     <ion-icon name="pencil"></ion-icon>
   </ion-button>
 </ion-item>

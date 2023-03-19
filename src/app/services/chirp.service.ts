@@ -10,12 +10,12 @@ import {
   DocumentData,
   DocumentReference,
   Firestore,
-  getDoc, orderBy
+  getDoc,
+  orderBy
 } from "@angular/fire/firestore";
 import {switchMap} from "rxjs";
 import {User} from "../models/user";
-import {Chirp} from "../models/chirp";
-import {query, where} from "@firebase/firestore";
+import {query} from "@firebase/firestore";
 
 
 @Injectable({
@@ -38,11 +38,16 @@ export class ChirpService {
     }
   }
 
-  async save(param: { imageUrl: string; content: string; createdAt: Date }, uid: string | undefined) {
+  async save(param: { imageUrl: string; content: string; createdAt: Date }, uid: string | undefined,writers:User[],readers:User[]) {
+
     const userRef = doc(this.fr, `users/${uid}`);
+    const writersRef = writers.map(writer => doc(this.fr, `users/${writer.id}`));
+    const readersRef = readers.map(reader => doc(this.fr, `users/${reader.id}`));
     const updatedParams = {
       ...param,
-      creator: userRef
+      creator: userRef,
+      writers: writersRef,
+      readers: readersRef
     }
     return await createNewDocumentWithoutId('chirps', updatedParams, this.fr);
   }

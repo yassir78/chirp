@@ -1,6 +1,5 @@
 .main-chirp,.comments-chirp {
     border-bottom: 1px solid rgb(239, 243, 244);
-
     .tweet-info {
         font-size: 0.9rem;
 
@@ -47,6 +46,11 @@ ion-textarea > div > div.native-textarea     {
 
 .comments-chirp {
     .preview-img {
-        
+
     }
+}
+.chirp-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
