@@ -42,6 +42,10 @@ export class ChirpDetailsComponent implements OnInit {
     }
   }
 
+  async deleteComment() {
+    // TODO: delete this comment
+  }
+
   async toggleEdit() {
     this.canEdit = !this.canEdit;
   }

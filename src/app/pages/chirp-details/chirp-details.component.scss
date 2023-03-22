@@ -1,5 +1,7 @@
-.main-chirp,.comments-chirp {
+.main-chirp,
+.comments-chirp {
     border-bottom: 1px solid rgb(239, 243, 244);
+
     .tweet-info {
         font-size: 0.9rem;
 
@@ -7,13 +9,16 @@
             font-weight: 600;
         }
 
-        .handle {
+        .p-left {
             padding-left: 4px;
+        }
+
+        .handle {
             color: var(--ion-color-medium);
         }
     }
 
-    .edit-chirp-textarea  {
+    .edit-chirp-textarea {
         --padding-top: 0;
         --padding-bottom: 0;
         --padding-start: 0;
@@ -35,22 +40,29 @@
     }
 }
 
-ion-textarea > div > div.native-textarea     {
+ion-textarea>div>div.native-textarea {
     // remove textarea default padding
     padding: 0;
     // justify text
-    text-align: justify!important;
-    word-wrap: normal!important;
-    padding-right: 0.5rem!important;
+    text-align: justify !important;
+    word-wrap: normal !important;
+    padding-right: 0.5rem !important;
 }
 
 .comments-chirp {
-    .preview-img {
-
-    }
+    .preview-img {}
 }
-.chirp-header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+
+.chirp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-edit {
+    transform: scale(1.5);
+
+    &:first-child {
+        margin-right: 0.5rem;
+    }
 }

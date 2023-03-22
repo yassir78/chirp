@@ -7,8 +7,11 @@
       font-weight: 600;
     }
 
-    .handle {
+    .p-left {
       padding-left: 4px;
+  }
+
+    .handle {
       color: var(--ion-color-medium);
     }
   }
@@ -23,14 +26,27 @@
 
   .chirp-text {
     // justify text
-    text-align: justify;
+    // text-align: justify;
     word-wrap: normal;
     padding-right: 0.5rem;
   }
 
-  .preview-img {
-    border: 1px solid var(--ion-color-light);
-    border-radius: 10px;
-    margin-top: 10px;
+  ion-avatar {
+    height: 3rem;
+    width: 3rem;
+  }
+}
+
+.comment-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-edit {
+  transform: scale(1.5);
+
+  &:first-child {
+    margin-right: 0.5rem;
   }
 }

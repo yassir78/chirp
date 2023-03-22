@@ -1,9 +1,9 @@
 <ion-header>
+  <ion-buttons>
+    <ion-back-button></ion-back-button>
+  </ion-buttons>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-    <ion-title>Chirp details title</ion-title>
+    <ion-title>Chirp details</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content *ngIf="loading$ | async">
@@ -22,18 +22,21 @@
         <ion-col size="12" class="chirp-header">
           <div>
             <span class="name">{{ chirp.name }}</span>
-            <span class="handle">@{{ chirp.handle }}</span>
-            <span class="handle">{{ chirp.date * 1000 | date : 'shortDate' }}</span>
+            <span class="handle p-left">@{{ chirp.handle }}</span>
+            <ion-row>
+              <span class="handle">{{ chirp.date * 1000 | date : 'shortDate' }}</span>
+            </ion-row>
           </div>
-          <ion-button fill="clear" color="medium" size="small" class="toggle-edit" (click)="toggleEdit()" >
-            <ion-icon name="create-outline" *ngIf="isEditor"></ion-icon>
-          </ion-button>
+          <div>
+            <ion-icon class="toggle-edit" color="medium" slot="icon-only" name="create-outline" (click)="toggleEdit()" *ngIf="isEditor"></ion-icon>
+            <ion-icon class="toggle-edit" color="medium" (click)="deleteComment()" slot="icon-only" name="close-outline" *ngIf="isEditor"></ion-icon>        
+          </div>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="12">
           <!-- if canEdit then replace by a text area and add a validate button -->
-          <ion-textarea inputmode="text" maxlength="256" class="text-justify edit-chirp-textarea" [autoGrow]="true"
+          <ion-textarea inputmode="text" maxlength="256" rows="1" class="text-justify edit-chirp-textarea" [autoGrow]="true"
                         [value]="chirp.text" *ngIf="canEdit"></ion-textarea>
           <div class="chirp-text" *ngIf="!canEdit" [innerHTML]="chirp.text"></div>
           <!-- show button to validate -->
