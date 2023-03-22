@@ -1,7 +1,7 @@
 import {inject, Injectable} from "@angular/core";
 import {AuthState} from "../states/auth.state";
 import {AuthService} from "../services/auth.service";
-import {combineLatest, map, Observable, switchMap} from "rxjs";
+import {combineLatest, map, Observable, Subscriber, Subscription, switchMap} from "rxjs";
 import {Router} from "@angular/router";
 import {RegisterRequestDto} from "../dtos/request/RegisterRequestDto";
 import {setIntervalAsync} from "set-interval-async";
@@ -15,20 +15,25 @@ import {
   signOut
 } from "@angular/fire/auth";
 import {User} from "../models/user";
-import {debug} from "../helpers/Utils";
+import {debug, generateFromEmail} from "../helpers/Utils";
 import {ToastController} from "@ionic/angular";
 import {Firestore} from "@angular/fire/firestore";
+import {UserFacade} from "./user.facade";
+import {ChirpFacade} from "./chirp.facade";
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthFacade {
   private auth = inject(Auth);
-  private  = inject(Firestore);
+  private = inject(Firestore);
+  private userFacade = inject(UserFacade);
+  private chirpFacade = inject(ChirpFacade);
   private toastController = inject(ToastController);
+  subscriber: Subscription;
 
   constructor(private authService: AuthService, private authState: AuthState, private router: Router) {
-    new Observable((subscriber) => {
+    this.subscriber = new Observable((subscriber) => {
       onAuthStateChanged(this.auth, (user) => {
           console.log('this is a google authentication');
           subscriber.next(user);
@@ -49,9 +54,9 @@ export class AuthFacade {
       });
     });
     setIntervalAsync(async () => {
-      const user = await this.auth.currentUser;
+      const user = this.auth.currentUser;
       if (user) {
-        if(!user.emailVerified){
+        if (!user.emailVerified) {
           await user.reload();
         }
       }
@@ -59,6 +64,7 @@ export class AuthFacade {
   }
 
   getFireStoreUser(email: string): Observable<User> {
+    console.log('getFireStoreUser', email)
     return this.authService.getUserByEmail(email);
   }
 
@@ -71,6 +77,14 @@ export class AuthFacade {
 
   getIsDoneLogin(): Observable<Boolean> {
     return this.authState.getisDoneLogin();
+  }
+
+  getIsDoneGoogleRegister(): Observable<Boolean> {
+    return this.authState.getIsDoneGoogleRegister();
+  }
+
+  setIsDoneGoogleRegister(value: Boolean) {
+    this.authState.isDoneGoogleRegister = value;
   }
 
   setIsDoneLogin(value: Boolean) {
@@ -94,9 +108,11 @@ export class AuthFacade {
 
 
   async handleUserVerification(user: any, isDoneRegister: Boolean, isDoneLogin: Boolean) {
+    console.log('handleUserVerification', user, isDoneRegister, isDoneLogin)
     if (!user.email || !isDoneRegister || !isDoneLogin) {
       return;
     }
+
 
     const {creationTime, lastSignInTime} = this.auth.currentUser!.metadata;
     const isFirstLogin = Date.parse(creationTime!) === Date.parse(lastSignInTime!);
@@ -124,11 +140,15 @@ export class AuthFacade {
   }
 
   async logout() {
+    this.subscriber.unsubscribe();
+    this.userFacade.unsubscribe();
+    this.chirpFacade.unsubscribe();
     await this.authService.logout();
     await this.router.navigate(['/auth/login']);
   }
 
   async googleLogin(googleUser: any) {
+    this.setIsDoneGoogleRegister(false);
     const credential = GoogleAuthProvider.credential(googleUser.authentication.idToken);
     const {user} = await signInWithCredential(this.auth, credential);
     try {
@@ -142,8 +162,25 @@ export class AuthFacade {
         firstname: googleUser.givenName ?? '',
         lastname: googleUser.familyName ?? '',
         photoUrl: googleUser.imageUrl ?? '',
+        username: generateFromEmail(googleUser.email ?? '')
       });
+      this.setIsDoneGoogleRegister(true);
     }
+    await this.auth.currentUser?.reload();
+    this.getFireStoreUser(user?.email!).pipe(
+      map((fireStoreUser: User) => {
+          return {
+            ...user,
+            ...fireStoreUser
+          }
+        }
+      )
+    ).subscribe(async (user) => {
+      combineLatest([this.getIsDoneRegister(), this.getIsDoneLogin()]).subscribe(async ([isDoneRegister, isDoneLogin]) => {
+        await this.handleUserVerification(user, isDoneRegister, isDoneLogin);
+        await this.router.navigate(['/app/home']);
+      });
+    });
   }
 
   async handleForgotPassword() {

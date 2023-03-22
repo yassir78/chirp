@@ -11,6 +11,7 @@ import {ChirpUserComponent} from "./chirp-user/chirp-user.component";
 import {ScrollingModule} from "@angular/cdk/scrolling";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ChirpListSkeletonComponent} from "./chirp-list-skeleton/chirp-list-skeleton.component";
+import {ChirpSkeletonComponent} from "./chirp-skeleton/chirp-skeleton.component";
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import {ChirpListSkeletonComponent} from "./chirp-list-skeleton/chirp-list-skele
     HeaderComponent,
     AddChirpComponent,
     ChirpUserComponent,
-    ChirpListSkeletonComponent
+    ChirpListSkeletonComponent,
+    ChirpSkeletonComponent
   ],
   imports: [
     CommonModule,
@@ -37,7 +39,8 @@ import {ChirpListSkeletonComponent} from "./chirp-list-skeleton/chirp-list-skele
     AvatarComponent,
     HeaderComponent,
     AddChirpComponent,
-    ChirpListSkeletonComponent
+    ChirpListSkeletonComponent,
+    ChirpSkeletonComponent
   ]
 })
 export class SharedModule {

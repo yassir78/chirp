@@ -67,6 +67,9 @@ export function isEmptyObject(object: any) {
   return object !== null && Object.keys(object).length === 0;
 }
 
+export function generateFromEmail(email: string) {
+  return email.split('@')[0];
+}
 export async function showAlert(invalidCredentials: string, pleaseCheckYourEmailAndPassword: string, alertCtrl: AlertController) {
   const alert = await alertCtrl.create({
     header: invalidCredentials,

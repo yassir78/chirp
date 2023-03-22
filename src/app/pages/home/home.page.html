@@ -1,7 +1,9 @@
 <app-menu></app-menu>
 
 <header></header>
-<ion-segment class="margin-top-1" [(ngModel)]="segment" mode="md" #segmentcontrol>
+<ion-segment
+  (ionChange)="segmentChanged($event)"
+  class="margin-top-1" [(ngModel)]="segment" mode="md" #segmentcontrol>
   <ion-segment-button value="home">
     <ion-label>Home</ion-label>
   </ion-segment-button>
@@ -13,14 +15,22 @@
 
 <ion-content>
 
-  <div *ngIf="(isLoading$ | async)">
+  <div *ngIf="(isLoadingChirpsWhereConnectedUserIsReaderOrWriter$ | async)">
     <chirp-list-skeleton></chirp-list-skeleton>
   </div>
-  <div *ngIf="!(isLoading$ | async)" class="ion-text-center" [hidden]="segment !== 'home'">
-    <chirp *ngFor="let chirp of (chirps$|async)" [chirp]="chirp"/>
+  <div *ngIf="!(isLoadingChirpsWhereConnectedUserIsReaderOrWriter$ | async) && (chirpsWhereConnectedUserIsReaderOrWriter | async)!.length === 0" class="ion-text-center" [hidden]="segment !== 'home'">
+    <p class="ion-margin-top">No chirps yet</p>
+  </div>
+  <div *ngIf="!(isLoadingChirpsWhereConnectedUserIsReaderOrWriter$ | async)" class="ion-text-center" [hidden]="segment !== 'home'">
+    <chirp *ngFor="let chirp of (chirpsWhereConnectedUserIsReaderOrWriter|async)" [chirp]="chirp"/>
   </div>
   <div [hidden]="segment !== 'manage'">
-    Manage tweets tab
+    <div *ngIf="!(isLoadingChirpsWhereConnectedUserIsCreator$ | async) && (chirpsWhereConnectedUserIsCreator | async)!.length === 0" class="ion-text-center" [hidden]="segment !== 'manage'">
+      <p class="ion-margin-top">No chirps yet</p>
+    </div>
+    <div *ngIf="!(isLoadingChirpsWhereConnectedUserIsCreator$ | async)" class="ion-text-center" [hidden]="segment !== 'manage'">
+      <chirp *ngFor="let chirp of (chirpsWhereConnectedUserIsCreator|async)" [chirp]="chirp"/>
+    </div>
   </div>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="openModal()">

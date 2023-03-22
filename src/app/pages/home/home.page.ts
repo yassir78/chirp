@@ -21,26 +21,23 @@ export class HomePage implements OnInit {
   modalCtrl = inject(ModalController);
   toastCtrl = inject(ToastController);
   connectedUser: Observable<User> | undefined;
-  chirps$: Observable<Chirp[]> | undefined;
-  isLoading$: Observable<Boolean> | undefined;
-  chirps: Observable<Chirp> | undefined;
-  chirpTest = {
-    img: "https://i.pravatar.cc/150?img=1",
-    name: "John Doe",
-    handle: "johndoe",
-    date: "2022-10-01",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    rechirp: true
-  };
 
+  isLoadingChirpsWhereConnectedUserIsReaderOrWriter$: Observable<Boolean> | undefined;
+  isLoadingChirpsWhereConnectedUserIsCreator$: Observable<Boolean> | undefined;
+  chirpsWhereConnectedUserIsReaderOrWriter: Observable<Chirp[]> | undefined;
+  chirpsWhereConnectedUserIsCreator: Observable<Chirp[]> | undefined;
+  chirps: Observable<Chirp> | undefined;
   constructor() {
   }
 
   ngOnInit() {
-    this.chirpFacade.getAllChirps();
+    this.chirpFacade.getAllChirpsWhereConnectedUserIsReaderOrWriter();
+    this.chirpFacade.getAllChirpsWhereConnectedUserIsCreator();
     this.connectedUser = this.auth.getCurrentUser();
-    this.isLoading$ = this.chirpFacade.getIsLoading();
-    this.chirps$ = this.chirpFacade.getChirps();
+    this.isLoadingChirpsWhereConnectedUserIsReaderOrWriter$ = this.chirpFacade.getIsChirpsWhereConnectedUserIsReaderOrWriterLoading();
+    this.isLoadingChirpsWhereConnectedUserIsCreator$ = this.chirpFacade.getIsChirpsWhereConnectedUserIsCreatorLoading();
+    this.chirpsWhereConnectedUserIsReaderOrWriter = this.chirpFacade.getChirpsWhereConnectedUserIsReaderOrWriter();
+    this.chirpsWhereConnectedUserIsCreator = this.chirpFacade.getChirpsWhereConnectedUserIsCreator();
   }
 
   async openModal() {
@@ -63,4 +60,7 @@ export class HomePage implements OnInit {
   }
 
 
+  segmentChanged($event: any) {
+
+  }
 }

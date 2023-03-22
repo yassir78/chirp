@@ -16,7 +16,6 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     this.connectedUser = this.auth.getCurrentUser();
-    console.log('user',this.connectedUser);
   }
 
   getUserFullName(user: User | null) {

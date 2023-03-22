@@ -26,7 +26,6 @@ export class ChirpUserComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.user)
   }
 
   removeUserFromReadersList(user: User) {

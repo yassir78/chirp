@@ -43,7 +43,6 @@ export class AuthService {
     } catch (e: any) {
       response.error = e.message;
     }
-    console.log('the response is: ', response)
     return response;
   }
 
@@ -73,18 +72,6 @@ export class AuthService {
         return users.filter((user: User) => user.email === email);
       })
     )
-    /*const collectionRef = collection(this.fr, 'users');
-    const q = query(collectionRef, where('email', '==', email));
-    const collectionData$ = collectionData(q, {idField: 'id'});
-    return collectionData$.pipe(
-      switchMap((users) => {
-        console.log('users: ', users)
-        const userWithReferences = users[0];
-        const user: User = this.mapUser(userWithReferences);
-        console.log('user: ', user)
-        return [user];
-      }
-    ));*/
   }
 
   private mapUser(userWithReferences: any): User {

@@ -79,6 +79,7 @@ export class AddChirpComponent implements OnInit {
       writers: this.writerUsers,
       readers: this.readerUsers,
     });
+    console.log('submitted')
     await loading.dismiss();
     return this.modalCtrl.dismiss(null, 'success');
   }

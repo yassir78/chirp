@@ -11,6 +11,8 @@ export class AuthState {
 
   private isDoneRegister$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(true);
 
+  private isDoneGoogleRegister$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(true);
+
   private isDoneLogin$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(true);
 
   set currentUser(user: User) {
@@ -21,6 +23,14 @@ export class AuthState {
     this.isEmailNotVerified$.next(value);
   }
 
+  set isDoneGoogleRegister(value: Boolean) {
+    this.isDoneGoogleRegister$.next(value);
+  }
+
+  getIsDoneGoogleRegister(): Observable<Boolean> {
+    return this.isDoneGoogleRegister$.asObservable();
+  }
+
   set isDoneRegister(value: Boolean) {
     this.isDoneRegister$.next(value);
   }
@@ -28,8 +38,9 @@ export class AuthState {
   set isDoneLogin(value: Boolean) {
     this.isDoneLogin$.next(value);
   }
+
   getCurrentUserValue(): User {
-    return this.currentUser$.value;
+    return this.currentUser$.getValue();
   }
 
   getisDoneLogin(): Observable<Boolean> {

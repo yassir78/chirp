@@ -4,6 +4,9 @@ import {ChirpService} from "../services/chirp.service";
 import {Photo} from "@capacitor/camera";
 import {AuthState} from "../states/auth.state";
 import {User} from "../models/user";
+import {Auth} from "@angular/fire/auth";
+import {Subscription} from "rxjs";
+import {Chirp} from "../models/chirp";
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +16,19 @@ export class ChirpFacade {
   private chirpState = inject(ChirpState);
   private authState = inject(AuthState);
   private chirpService = inject(ChirpService);
+  getAllChirpsWhereConnectedUserIsCreatorSubscription: Subscription | undefined;
+  getAllChirpsWhereConnectedUserIsReaderOrWriterSubscription: Subscription | undefined;
 
-  async save({content, imageUrl, createdAt,writers,readers}: { content: string, imageUrl: string, createdAt: Date ,writers:User[],readers:User[]}) {
+
+  async save({
+               content,
+               imageUrl,
+               createdAt,
+               writers,
+               readers
+             }: { content: string, imageUrl: string, createdAt: Date, writers: User[], readers: User[] }) {
     const user = this.authState.getCurrentUserValue();
-    const chirpRef = await this.chirpService.save({content, imageUrl, createdAt}, user.uid,writers,readers);
+    const chirpRef = await this.chirpService.save({content, imageUrl, createdAt}, user.uid, writers, readers);
     return this.chirpService.addChirpToUserChirps(user.uid, chirpRef);
   }
 
@@ -35,19 +47,68 @@ export class ChirpFacade {
     return this.chirpState.getisAddLoading();
   }
 
-  getChirps() {
-    return this.chirpState.getChirps();
+  getChirpsWhereConnectedUserIsReaderOrWriter() {
+    return this.chirpState.getChirpsWhereConnectedUserIsReaderOrWriter();
   }
 
-  getIsLoading() {
-    return this.chirpState.getIsLoading();
+  getChirpsWhereConnectedUserIsCreator() {
+    return this.chirpState.getChirpsWhereConnectedUserIsCreator();
   }
 
-  getAllChirps() {
-    this.chirpState.isLoading = true;
-    this.chirpService.findAllChirps().subscribe(chirps => {
-      this.chirpState.chirps = chirps;
-      this.chirpState.isLoading = false;
-    })
+  getIsChirpsWhereConnectedUserIsReaderOrWriterLoading() {
+    return this.chirpState.getIsChirpsWhereConnectedUserIsReaderOrWriterLoading();
+  }
+
+  getIsChirpsWhereConnectedUserIsCreatorLoading() {
+    return this.chirpState.getIsChirpsWhereConnectedUserIsCreatorLoading();
+  }
+
+
+  getAllChirpsWhereConnectedUserIsReaderOrWriter() {
+    this.authState.getCurrentUser().subscribe(user => {
+      if (!user) return;
+      this.chirpState.isChirpsWhereConnectedUserIsReaderOrWriterLoading = true;
+      this.getAllChirpsWhereConnectedUserIsReaderOrWriterSubscription = this.chirpService.findAllChirpsWhereUserIsWriterOrReader(user!.id!).subscribe(chirps => {
+        this.chirpState.chirpsWhereConnectedUserIsReaderOrWriter = chirps;
+        this.chirpState.isChirpsWhereConnectedUserIsReaderOrWriterLoading = false;
+      })
+    });
+
+  }
+
+  getAllChirpsWhereConnectedUserIsCreator() {
+    this.authState.getCurrentUser().subscribe(user => {
+      this.chirpState.isChirpsWhereConnectedUserIsCreatorLoading = true;
+      this.getAllChirpsWhereConnectedUserIsCreatorSubscription = this.chirpService.findAllChirpsWhereUserIsCreator(user!.id!).subscribe(chirps => {
+        this.chirpState.chirpsWhereConnectedUserIsCreator = chirps;
+        this.chirpState.isChirpsWhereConnectedUserIsCreatorLoading = false;
+      })
+    });
+
+  }
+
+
+  async getChirpById(id: string) {
+    const chirp = await this.chirpService.findChirpById(id);
+    this.chirpState.isChirpDetailLoading = true;
+    this.chirpState.chirpDetail = <Chirp> chirp;
+    this.chirpState.isChirpDetailLoading = false;
+  }
+
+  getChirpDetail() {
+    return this.chirpState.getChirpDetail();
+  }
+
+  getIsChirpDetailLoading() {
+    return this.chirpState.getIsChirpDetailLoading();
+  }
+
+  unsubscribe() {
+    if (this.getAllChirpsWhereConnectedUserIsReaderOrWriterSubscription) {
+      this.getAllChirpsWhereConnectedUserIsReaderOrWriterSubscription.unsubscribe();
+    }
+    if (this.getAllChirpsWhereConnectedUserIsCreatorSubscription) {
+      this.getAllChirpsWhereConnectedUserIsCreatorSubscription.unsubscribe();
+    }
   }
 }

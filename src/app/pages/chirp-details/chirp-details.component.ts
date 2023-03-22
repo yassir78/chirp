@@ -1,4 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
+import {Chirp} from "../../models/chirp";
+import {ChirpFacade} from "../../facades/chirp.facade";
+import {ActivatedRoute} from "@angular/router";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'chirp-details',
@@ -10,12 +14,23 @@ export class ChirpDetailsComponent implements OnInit {
   @Input() chirp: any;
   isEditor: boolean = true;
   canEdit: boolean = true;
+  private chirpFacade = inject(ChirpFacade);
+  private activeRouterSnapshot = inject(ActivatedRoute).snapshot;
+
+  loading$: Observable<Boolean> | undefined;
 
 
-  constructor() { }
+  // @ts-ignore
+  chirp: Chirp;
 
-  ngOnInit() {
-    this.chirp ={
+  constructor() {
+  }
+
+  async ngOnInit() {
+    this.chirp = this.chirpFacade.getChirpDetail();
+    this.loading$ = this.chirpFacade.getIsChirpDetailLoading();
+    await this.chirpFacade.getChirpById(this.activeRouterSnapshot.params['id']);
+    this.chirp = {
       img: "https://i.pravatar.cc/150?img=2",
       name: "Jane Smith",
       handle: "janesmith",

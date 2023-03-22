@@ -1,5 +1,6 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {Component, inject, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {Chirp} from "../../../../models/chirp";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'chirp',
@@ -9,11 +10,17 @@ import {Chirp} from "../../../../models/chirp";
 })
 export class ChirpComponent implements OnInit {
   // @ts-ignore
-  @Input() chirp: Chirp ;
-  constructor() { }
+  @Input() chirp: Chirp;
+  private router = inject(Router);
 
-  ngOnInit() {
-    console.log(this.chirp)
+  constructor() {
   }
 
+  ngOnInit() {
+  }
+
+  async details() {
+    await this.router.navigate(['app/chirp-details', this.chirp.id]);
+
+  }
 }

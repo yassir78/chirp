@@ -6,9 +6,11 @@
     <ion-title>Chirp details title</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content *ngIf="loading$ | async">
+  <chirp-skeleton />
+</ion-content>
+<ion-content *ngIf="!(loading$ | async)">
   <ion-row class="main-chirp ion-padding-top ion-padding-horizontal">
-
     <ion-col size="2" class="ion-text-center">
       <ion-avatar slot="">
         <ion-img [src]="chirp.img"></ion-img>

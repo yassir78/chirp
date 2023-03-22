@@ -19,7 +19,7 @@ const routes: Routes = [
         loadChildren: () => import('../page2/page2.module').then(m => m.Page2Module)
       },
       {
-        path: 'chirp-details',
+        path: 'chirp-details/:id',
         loadChildren: () => import('../chirp-details/chirp-details.module').then(m => m.ChirpDetailsModule)
       }
     ]
