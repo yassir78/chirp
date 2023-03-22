@@ -5,19 +5,42 @@
       <ion-img src="https://i.pravatar.cc/150?img=2"></ion-img>
     </ion-avatar>
   </ion-col>
-  <ion-col size="12" class="ion-padding-start">
+  <ion-col size="10" class="ion-padding-start">
     <ion-row class="tweet-info">
-      <ion-col size="14">
-        <span class="name">Jane Smith</span>
-        <span class="handle">@janesmith</span>
-        <span class="handle">11/02/2023</span>
+      <ion-col class="comment-header" size="12">
+        <div>
+          <span class="name">Jane Smith</span>
+          <span class="handle p-left">@janesmith</span>
+          <ion-row class="tweet-info">
+            <span class="handle">11/02/2023</span>
+          </ion-row>
+        </div>
+        <div>
+          <ion-icon class="toggle-edit" color="medium" slot="icon-only" name="create-outline" (click)="toggleEdit()" *ngIf="isEditor"></ion-icon>
+          <ion-icon class="toggle-edit" color="medium" (click)="deleteComment()" slot="icon-only" name="close-outline" *ngIf="isEditor"></ion-icon>
+        </div>
+
+
       </ion-col>
     </ion-row>
+
     <ion-row>
-      <ion-col size="14">
-        <div class="chirp-text">
+      <ion-col size="12">
+        <!-- if canEdit then replace by a text area and add a validate button -->
+        <ion-textarea inputmode="text" rows="1" maxlength="256" class="text-justify edit-chirp-textarea" [autoGrow]="true"
+                value="dmfksdfqskfpdskfpsd" *ngIf="canEdit"></ion-textarea>
+        
+        <div class="chirp-text" *ngIf="!canEdit">
           lorem ipsum fdogudfgoi dfgiodfgidfug dfgoudcazdzadzadazadza
         </div>
+
+        <!-- show button to validate -->
+        <ion-row *ngIf="canEdit">
+          <ion-button (click)="validateEdit()" expand="block" color="primary" size="small">
+            <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+            Update
+          </ion-button>
+        </ion-row>
       </ion-col>
     </ion-row>
   </ion-col>

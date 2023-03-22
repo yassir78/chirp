@@ -83,6 +83,9 @@
               "progress": false
             }
           },
+          "options": {
+            "disableHostCheck": true
+          },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
