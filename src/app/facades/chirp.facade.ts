@@ -4,7 +4,6 @@ import {ChirpService} from "../services/chirp.service";
 import {Photo} from "@capacitor/camera";
 import {AuthState} from "../states/auth.state";
 import {User} from "../models/user";
-import {Auth} from "@angular/fire/auth";
 import {Subscription} from "rxjs";
 import {Chirp} from "../models/chirp";
 
@@ -88,11 +87,21 @@ export class ChirpFacade {
   }
 
 
-  async getChirpById(id: string) {
-    const chirp = await this.chirpService.findChirpById(id);
-    this.chirpState.isChirpDetailLoading = true;
-    this.chirpState.chirpDetail = <Chirp> chirp;
-    this.chirpState.isChirpDetailLoading = false;
+  getChirpById(id: string) {
+    this.chirpService.findChirpById(id).subscribe(chirp => {
+      this.chirpState.isChirpDetailLoading = true;
+      console.log('chirp', chirp)
+      this.chirpState.chirpDetail = <Chirp>chirp;
+      this.chirpState.isChirpDetailLoading = false;
+    });
+  }
+
+  async deleteChirp(chirp: Chirp,chirpId: string) {
+    await this.chirpService.deleteChirp(chirp,chirpId);
+  }
+
+  async updateChirp(chirp: Chirp) {
+   await this.chirpService.updateChirp(chirp);
   }
 
   getChirpDetail() {

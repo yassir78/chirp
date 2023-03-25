@@ -1,16 +1,23 @@
-<ion-item class="comments-chirp-reply">
-  <!-- comment section -->
-  <ion-col size="2" class="ion-text-center">
-    <ion-avatar slot="">
-      <ion-img src="https://i.pravatar.cc/150?img=2"></ion-img>
-    </ion-avatar>
-  </ion-col>
-  <ion-col size="7" class="ion-padding-start">
-    <ion-textarea autoGrow="true" placeholder="Write a comment..." class="ion-no-padding"></ion-textarea>
-  </ion-col>
-  <ion-col size="3" >
-    <ion-button class="ion-margin-end">
-      Reply
-    </ion-button>
-  </ion-col>
-</ion-item>
+<form [formGroup]="commentForm">
+
+  <ion-item class="comments-chirp-reply">
+    <!-- comment section -->
+
+    <ion-col size="2" class="ion-text-center">
+      <ion-avatar slot="">
+        <ion-img [src]="(currentUser$ | async)!.photoUrl"></ion-img>
+      </ion-avatar>
+    </ion-col>
+    <ion-col size="7" class="ion-padding-start">
+      <ion-textarea autoGrow="true" formControlName="comment" placeholder="Write a comment..."
+                    class="ion-no-padding"></ion-textarea>
+    </ion-col>
+    <ion-col size="3">
+      <ion-button class="ion-margin-end" type="submit" (click)="submit()" [disabled]="commentForm.invalid">
+        Reply
+      </ion-button>
+    </ion-col>
+
+  </ion-item>
+</form>
+

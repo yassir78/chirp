@@ -1,17 +1,12 @@
 import {User} from "./user";
 import firebase from "firebase/compat";
 import Timestamp = firebase.firestore.Timestamp;
-import {Comment} from "./comment";
+import {Chirp} from "./chirp";
 
-export interface Chirp {
+export interface Comment {
   id?: string;
-  content?: string;
-  imageUrl?: string;
-
+  comment?: string;
+  chirp?: Chirp;
   creator?: User;
   createdAt?: Timestamp;
-  comments?: Comment[];
-
-  readers?: User[];
-  writers?: User[];
 }

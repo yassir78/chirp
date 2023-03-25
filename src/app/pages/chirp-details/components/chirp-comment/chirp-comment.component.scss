@@ -50,3 +50,11 @@
     margin-right: 0.5rem;
   }
 }
+.toggle-delete {
+  transform: scale(1.5);
+  color: #FC2947 !important;
+
+  &:first-child {
+    margin-right: 0.5rem;
+  }
+}

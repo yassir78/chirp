@@ -5,8 +5,6 @@ import {Router} from "@angular/router";
 import {getErrorMessage, showAlert} from "../../../../helpers/Utils";
 import {AuthFacade} from "../../../../facades/auth.facade";
 import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
-import {sendPasswordResetEmail} from "@angular/fire/auth";
-import {Observable} from "rxjs";
 
 const emailValidators = [Validators.required, Validators.email];
 const passwordValidators = Validators.required;

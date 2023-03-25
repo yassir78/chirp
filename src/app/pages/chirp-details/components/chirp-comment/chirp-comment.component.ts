@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
+import {Comment} from "../../../../models/comment";
+import {CommentFacade} from "../../../../facades/comment.facade";
+import {AlertController, ToastController} from "@ionic/angular";
 
 @Component({
   selector: 'chirp-comment',
@@ -6,23 +9,95 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./chirp-comment.component.scss'],
 })
 export class ChirpCommentComponent implements OnInit {
-  isEditor: boolean = true;
-  canEdit: boolean = true;
+  @Input() comment: Comment | undefined;
+  @Input() isEditor: boolean = true;
+  canEdit: boolean = false;
 
-  constructor() { }
+  private alertCtrl = inject(AlertController);
+  private commentFacade = inject(CommentFacade);
 
-  ngOnInit() {}
+  private toastCtrl = inject(ToastController);
 
-  async deleteComment() {
-    // TODO: delete this comment
+  constructor() {
   }
+
+  ngOnInit() {
+    console.log(this.comment)
+  }
+
 
   async toggleEdit() {
     this.canEdit = !this.canEdit;
   }
 
-  async validateEdit() {
-    // TODO: get value from textarea and update chirp
+  async deleteComment(comment: Comment) {
+    const alert = await this.alertCtrl.create({
+      header: 'Do you want to delete this comment?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: async () => {
+          },
+        },
+        {
+          text: 'OK',
+          role: 'confirm',
+          handler: async () => {
+            await this.commentFacade.delete(comment);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+    const {role} = await alert.onDidDismiss();
+    console.log('onDidDismiss resolved with role', role);
+    if (role === 'confirm') {
+      const toast = await this.toastCtrl.create({
+        message: 'Comment deleted successfully',
+        duration: 2000
+      });
+      await toast.present();
+    }
+  }
+
+  async validateEdit(value: any, comment: any) {
+    const alert = await this.alertCtrl.create({
+      header: 'Do you want to edit this comment?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: async () => {
+            await this.toggleEdit();
+          },
+        },
+        {
+          text: 'OK',
+          role: 'confirm',
+          handler: async () => {
+            await this.commentFacade.update({
+              ...comment,
+              comment: value
+            });
+            await this.toggleEdit();
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+    const {role} = await alert.onDidDismiss();
+    console.log('onDidDismiss resolved with role', role);
+    if (role === 'confirm') {
+      const toast = await this.toastCtrl.create({
+        message: 'Comment updated successfully',
+        duration: 2000
+      });
+      await toast.present();
+    }
+
   }
 
 }

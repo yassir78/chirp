@@ -2,45 +2,43 @@
   <!-- comment section -->
   <ion-col size="2" class="ion-text-center">
     <ion-avatar slot="">
-      <ion-img src="https://i.pravatar.cc/150?img=2"></ion-img>
+      <ion-img [src]="comment!.creator?.photoUrl"></ion-img>
     </ion-avatar>
   </ion-col>
   <ion-col size="10" class="ion-padding-start">
     <ion-row class="tweet-info">
       <ion-col class="comment-header" size="12">
         <div>
-          <span class="name">Jane Smith</span>
-          <span class="handle p-left">@janesmith</span>
+          <span
+            class="name">{{ comment!.creator ? (comment!.creator!.firstname + ' ' + comment!.creator!.lastname) : '' }}</span>
+          <span class="handle p-left">@{{ comment!.creator ? comment!.creator!.username : '' }}</span>
           <ion-row class="tweet-info">
-            <span class="handle">11/02/2023</span>
+            <span
+              class="handle">{{ comment!.createdAt ? (comment!.createdAt!.seconds | date : 'yyyy-MM-dd HH:mm') : '' }}</span>
           </ion-row>
         </div>
         <div>
-          <ion-icon class="toggle-edit" color="medium" slot="icon-only" name="create-outline" (click)="toggleEdit()" *ngIf="isEditor"></ion-icon>
-          <ion-icon class="toggle-edit" color="medium" (click)="deleteComment()" slot="icon-only" name="close-outline" *ngIf="isEditor"></ion-icon>
+          <ion-icon class="toggle-edit" color="medium" slot="icon-only" name="create-outline" (click)="toggleEdit()"
+                    *ngIf="isEditor"></ion-icon>
+          <ion-icon class="toggle-delete"  (click)="deleteComment(comment!)" slot="icon-only"
+                    name="trash-outline" *ngIf="isEditor"></ion-icon>
         </div>
-
-
       </ion-col>
     </ion-row>
 
     <ion-row>
-      <ion-col size="12">
-        <!-- if canEdit then replace by a text area and add a validate button -->
-        <ion-textarea inputmode="text" rows="1" maxlength="256" class="text-justify edit-chirp-textarea" [autoGrow]="true"
-                value="dmfksdfqskfpdskfpsd" *ngIf="canEdit"></ion-textarea>
-        
-        <div class="chirp-text" *ngIf="!canEdit">
-          lorem ipsum fdogudfgoi dfgiodfgidfug dfgoudcazdzadzadazadza
-        </div>
-
-        <!-- show button to validate -->
+      <ion-col size="12" *ngIf="canEdit">
+        <ion-textarea #myInput inputmode="text" maxlength="256" rows="1" class="text-justify edit-chirp-textarea"
+                      [autoGrow]="true" [value]="comment!.comment"></ion-textarea>
         <ion-row *ngIf="canEdit">
-          <ion-button (click)="validateEdit()" expand="block" color="primary" size="small">
+          <ion-button (click)="validateEdit(myInput.value,comment)" expand="block" color="primary" size="small">
             <ion-icon name="checkmark-outline" slot="start"></ion-icon>
             Update
           </ion-button>
         </ion-row>
+      </ion-col>
+      <ion-col size="12" *ngIf="!canEdit">
+        <div class="chirp-text" [innerHTML]="comment!.comment"></div>
       </ion-col>
     </ion-row>
   </ion-col>

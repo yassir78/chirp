@@ -1,79 +1,99 @@
-<ion-header>
-  <ion-buttons>
-    <ion-back-button></ion-back-button>
-  </ion-buttons>
-  <ion-toolbar>
-    <ion-title>Chirp details</ion-title>
-  </ion-toolbar>
-</ion-header>
-<ion-content *ngIf="loading$ | async">
-  <chirp-skeleton />
-</ion-content>
-<ion-content *ngIf="!(loading$ | async)">
-  <ion-row class="main-chirp ion-padding-top ion-padding-horizontal">
-    <ion-col size="2" class="ion-text-center">
-      <ion-avatar slot="">
-        <ion-img [src]="chirp.img"></ion-img>
-      </ion-avatar>
-    </ion-col>
+<ion-toolbar class="ion-padding-horizontal">
+  <ion-icon name="arrow-back-outline" class="return-icon"
+            slot="start" (click)="return()"></ion-icon>
+</ion-toolbar>
 
-    <ion-col size="10" class="ion-padding-start">
-      <ion-row class="tweet-info">
-        <ion-col size="12" class="chirp-header">
-          <div>
-            <span class="name">{{ chirp.name }}</span>
-            <span class="handle p-left">@{{ chirp.handle }}</span>
-            <ion-row>
-              <span class="handle">{{ chirp.date * 1000 | date : 'shortDate' }}</span>
-            </ion-row>
-          </div>
-          <div>
-            <ion-icon class="toggle-edit" color="medium" slot="icon-only" name="create-outline" (click)="toggleEdit()" *ngIf="isEditor"></ion-icon>
-            <ion-icon class="toggle-edit" color="medium" (click)="deleteComment()" slot="icon-only" name="close-outline" *ngIf="isEditor"></ion-icon>        
-          </div>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="12">
-          <!-- if canEdit then replace by a text area and add a validate button -->
-          <ion-textarea inputmode="text" maxlength="256" rows="1" class="text-justify edit-chirp-textarea" [autoGrow]="true"
-                        [value]="chirp.text" *ngIf="canEdit"></ion-textarea>
-          <div class="chirp-text" *ngIf="!canEdit" [innerHTML]="chirp.text"></div>
-          <!-- show button to validate -->
-          <ion-row *ngIf="canEdit">
-            <ion-button (click)="validateEdit()" expand="block" color="primary" size="small">
+<ion-content *ngIf="loading$ | async">
+  <chirp-skeleton/>
+</ion-content>
+<ion-content *ngIf="!(loading$ | async) ">
+  <div *ngIf="(chirp$ | async) as chirp">
+    <ion-row class="main-chirp ion-padding-top ion-padding-horizontal">
+      <ion-col size="2" class="ion-text-center">
+        <ion-avatar slot="">
+          <ion-img [src]="(chirp$ | async)!.creator?.photoUrl"></ion-img>
+        </ion-avatar>
+      </ion-col>
+
+      <ion-col size="10" class="ion-padding-start">
+        <ion-row class="tweet-info">
+          <ion-col size="12" class="chirp-header">
+            <div>
+              <span
+                class="name">{{ chirp!.creator ? (chirp!.creator!.firstname + ' ' + chirp!.creator!.lastname) : '' }}</span>
+              <span class="handle p-left">@{{ chirp!.creator ? chirp!.creator!.username : 'Unknown' }}</span>
+              <ion-row>
+                <span
+                  class="handle">{{ chirp!.createdAt ? (chirp!.createdAt!.seconds | date : 'yyyy-MM-dd HH:mm') : '' }}</span>
+              </ion-row>
+            </div>
+            <div>
+              <ion-icon class="toggle-edit" color="medium" slot="icon-only" name="create-outline" (click)="toggleEdit()"
+                        *ngIf="isEditor"></ion-icon>
+              <ion-icon class="toggle-delete" (click)="deleteChirp(chirp)" slot="icon-only"
+                        name="trash-outline"
+                        *ngIf="isEditor"></ion-icon>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12" *ngIf="canEdit">
+            <!-- if canEdit then replace by a text area and add a validate button -->
+
+            <ion-textarea #myInput inputmode="text" maxlength="256" rows="1" class="text-justify "
+                          [ngClass]="canEdit ? 'edit-chirp-textarea' : ''"
+                          [autoGrow]="true" [value]="chirp.content" (ionChange)="validateEdit(myInput.value)"></ion-textarea>
+
+
+          </ion-col>
+
+          <ion-col size="12" *ngIf="!canEdit">
+            <div class="chirp-text" [innerHTML]="chirp.content"></div>
+
+          </ion-col>
+        </ion-row>
+        <img class="preview-img" [src]="imageUrl" *ngIf="(chirp$ | async)?.imageUrl && isEditor"
+             (click)="selectImage()"
+             alt="chirp attachment">
+        <img class="preview-img" [src]="imageUrl" *ngIf="(chirp$ | async)?.imageUrl && !isEditor"
+             alt="chirp attachment">
+
+        <ion-row>
+          <ion-row *ngIf="isEditor">
+
+            <ion-button (click)="update(chirp)" expand="block" color="primary" size="small">
               <ion-icon name="checkmark-outline" slot="start"></ion-icon>
               Update
             </ion-button>
           </ion-row>
-          <img class="preview-img" [src]="chirp.attachment" *ngIf="chirp.attachment" alt="chirp attachment">
-        </ion-col>
-      </ion-row>
-
-      <ion-row class="ion-justify-content-start">
-        <ion-col>
-          <ion-button fill="clear" color="medium" size="small">
-            <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
-            {{ 25 }}
-          </ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button fill="clear" color="medium" [color]="true ? 'primary' : 'medium'" size="small">
-            <ion-icon name="repeat-outline" slot="start"></ion-icon>
-            {{ 5 }}
-          </ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button fill="clear" color="medium" [color]="true ? 'primary' : 'medium'" size="small">
-            <ion-icon name="heart-outline" slot="start"></ion-icon>
-            {{ 10 }}
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-col>
-  </ion-row>
-  <chirp-comment-reply/>
-  <ion-list>
-    <chirp-comment />
-  </ion-list>
+        </ion-row>
+        <ion-row class="ion-justify-content-start">
+          <ion-col>
+            <ion-button fill="clear" color="medium" size="small">
+              <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+              {{ 25 }}
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button fill="clear" color="medium" [color]="true ? 'primary' : 'medium'" size="small">
+              <ion-icon name="repeat-outline" slot="start"></ion-icon>
+              {{ 5 }}
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button fill="clear" color="medium" [color]="true ? 'primary' : 'medium'" size="small">
+              <ion-icon name="heart-outline" slot="start"></ion-icon>
+              {{ 10 }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+    <chirp-comment-reply [id]="chirpId"/>
+    <ion-list>
+      <chirp-comment *ngFor="let comment of chirp.comments" [comment]="comment"
+                     [isEditor]="isEditor"
+      ></chirp-comment>
+    </ion-list>
+  </div>
 </ion-content>

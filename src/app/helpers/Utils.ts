@@ -32,7 +32,9 @@ export async function createNewDocumentWithoutId(collectionName: string, data: a
 }
 
 export async function updateDocument(collectionName: string, id: string, data: any,fr:Firestore) {
-  return updateDoc(doc(fr, collectionName, id), data);
+  console.log({collectionName, id, data,fr})
+  const docRef = doc(fr, collectionName, String(id));
+  return updateDoc(docRef, data);
 }
 export async function isEntityExistsBy(collectionName: string, param: string, value: string, fr: Firestore) {
   const entityRef = collection(fr, collectionName);

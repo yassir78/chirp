@@ -6,16 +6,22 @@ import {
   arrayUnion,
   collection,
   collectionData,
+  deleteDoc,
   doc,
+  docData,
   DocumentData,
   DocumentReference,
   Firestore,
   getDoc,
-  orderBy
+  orderBy,
+  updateDoc
 } from "@angular/fire/firestore";
-import {combineLatest, from, map, switchMap} from "rxjs";
+import {combineLatest, map, Observable, of, switchMap} from "rxjs";
 import {User} from "../models/user";
 import {query, where} from "@firebase/firestore";
+import {Chirp} from "../models/chirp";
+import {Comment} from "../models/comment";
+import {serverTimestamp} from "@angular/fire/database";
 
 
 @Injectable({
@@ -116,15 +122,6 @@ export class ChirpService {
     }));
   }
 
-  private async mapChirpWithCreator(chirp: DocumentData | undefined) {
-    const path = chirp!['creator'].path;
-    const chirpDoc = await getDoc(doc(this.fr, path));
-    const creator = await chirpDoc.data() as User;
-    return {
-      ...chirp,
-      creator
-    };
-  }
 
   private async mapChirpWithWritersAndReaders(chirp: DocumentData | undefined) {
     const writers = await Promise.all(chirp!['writers'].map(async (writer: DocumentReference) => {
@@ -144,11 +141,143 @@ export class ChirpService {
     };
   }
 
-  async findChirpById(id: string) {
+  /*
+  const collectionRef = collection(this.fr, 'chirps');
+    const q = query(collectionRef,
+      where('creator', '==', doc(this.fr, `users/${uid}`)),
+      orderBy('createdAt', 'desc')
+    );
+    const collectionData$ = collectionData(q, {idField: 'id'});
+    return collectionData$.pipe(
+      switchMap(async (chirps) => {
+          return this.mapChirpsWithCreator(chirps);
+        }
+      ));
+  * */
+  private mapChirpWithCreator(chirp: DocumentData | undefined): Observable<User> {
+    const path = chirp!['creator'].path;
+    return docData(doc(this.fr, path));
+  }
+
+  private mapCommentWithCreator(comment: DocumentData | undefined): Observable<User> {
+    if (comment && comment['creator']) {
+      const path = comment['creator'].path;
+      return docData(doc(this.fr, path));
+    } else {
+      return of({} as User);
+    }
+  }
+
+  private mapChirpWithComments(chirp: DocumentData | undefined): Observable<Comment[]> {
+    const commentsRef = chirp!['comments'];
+    if (chirp && commentsRef && commentsRef.length > 0) {
+      const comments$: Comment[] = commentsRef
+        .map((commentRef: DocumentReference) => {
+          return docData<Comment>(commentRef).pipe(
+            switchMap((comment) => {
+              if (!comment) {
+                return of({} as Comment);
+              }
+              return this.mapCommentWithCreator(comment).pipe(
+                map((creator) => {
+                  return {
+                    id: commentRef.id, // add id property to comment
+                    ...comment,
+                    creator
+                  };
+                })
+              )
+            })
+          );
+        });
+      return combineLatest(comments$).pipe(
+        map((comments: Comment[]) => {
+          return comments.sort((a, b) => b.createdAt!.seconds - a.createdAt!.seconds);
+        })
+      );
+    } else {
+      return of([]);
+    }
+
+  }
+
+  findChirpById(id: string): Observable<any> {
     const collectionRef = collection(this.fr, 'chirps');
     const docRef = doc(collectionRef, id);
-    const docSnap = await getDoc(docRef);
-    const result =  await this.mapChirpWithCreator(docSnap.data());
-    return this.mapChirpWithWritersAndReaders(result);
+    return docData<Chirp>(docRef).pipe(
+      switchMap((chirp) => {
+        return combineLatest([
+          this.mapChirpWithComments(chirp),
+          this.mapReaders(chirp),
+          this.mapReaders(chirp),
+          this.mapChirpWithCreator(chirp)]).pipe(
+          map(([comments, readers, writers, creator]) => {
+            console.log('readers', readers);
+            console.log('creator', creator)
+            return {
+              ...chirp,
+              comments,
+              readers,
+              writers,
+              creator
+            };
+          })
+        );
+      })
+    );
   }
+
+  updateChirp(chirp: Chirp) {
+    const updatedParams = {
+      content: chirp.content,
+      imageUrl: chirp.imageUrl,
+      updatedAt: serverTimestamp()
+    }
+    console.log('updatedParams', updatedParams);
+    return updateDoc(doc(this.fr, `chirps/${chirp.id}`), updatedParams);
+  }
+
+  async deleteChirp(chirp: Chirp, chirpId: string) {
+    chirp!.comments!.forEach((comment) => {
+      this.deleteComment(comment);
+    });
+    await deleteDoc(doc(this.fr, `chirps/${chirpId}`));
+  }
+
+  private deleteComment(comment: Comment) {
+    return deleteDoc(doc(this.fr, `comments/${comment.id}`));
+  }
+
+  private mapReaders(chirp: Chirp): Observable<User[]> {
+    const readersRef = chirp!['readers'];
+    if (chirp && readersRef && readersRef.length > 0) {
+      // @ts-ignore
+      const readers$: User[] = readersRef
+        // @ts-ignore
+        .map((readerRef: DocumentReference) => {
+          return docData<User>(readerRef);
+        });
+      return combineLatest(readers$);
+    } else {
+      console.log('no readers');
+      return of([]);
+    }
+  }
+
+  private mapWriters(chirp: Chirp): Observable<User[]> {
+    const writersRef = chirp!['writers'];
+    if (chirp && writersRef && writersRef.length > 0) {
+      // @ts-ignore
+      const writers$: User[] = writersRef
+        // @ts-ignore
+        .map((writersRef: DocumentReference) => {
+          return docData<User>(writersRef);
+        });
+      return combineLatest(writers$);
+    } else {
+      console.log('no writers');
+      return of([]);
+    }
+  }
+
 }
