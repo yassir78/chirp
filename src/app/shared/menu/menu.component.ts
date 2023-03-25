@@ -11,6 +11,7 @@ import { User } from 'src/app/models/user';
 export class MenuComponent implements OnInit {
   auth = inject(AuthFacade);
   connectedUser : Observable<User> | undefined;
+  activePage = "home";
 
   constructor() { }
 
@@ -30,6 +31,10 @@ export class MenuComponent implements OnInit {
       return '';
     }
     return `@${user.username}`;
+  }
+
+  async changePage(newPage: string) {
+    this.activePage = newPage;
   }
 
   async logoutUser() {
