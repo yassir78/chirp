@@ -4,6 +4,7 @@ import {RouterModule, Routes} from "@angular/router";
 import {TabsComponent} from "./tabs.component";
 import {FormsModule} from "@angular/forms";
 import {IonicModule} from "@ionic/angular";
+import {SharedModule} from "../../shared/shared.module";
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
       {
         path: 'chirp-details/:id',
         loadChildren: () => import('../chirp-details/chirp-details.module').then(m => m.ChirpDetailsModule)
+      },
+      {
+        path: 'profile-details',
+        loadChildren: () => import('../profile-details/profile-details.module').then(m => m.ProfileDetailsModule)
       }
     ]
   },
@@ -38,6 +43,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     RouterModule.forChild(routes),
+    SharedModule,
   ]
 })
 export class TabsModule {

@@ -1,6 +1,10 @@
-<ion-toolbar class="ion-padding-horizontal">
+<ion-toolbar class="ion-padding-horizontal header" *ngIf="(chirp$ | async) as chirp">
   <ion-icon name="arrow-back-outline" class="return-icon"
             slot="start" (click)="return()"></ion-icon>
+  <ion-button  color="primary" (click)="update(chirp)" slot="end" size="small" *ngIf="isEditor">
+    <ion-icon name="checkmark-outline" ></ion-icon>
+    Update
+  </ion-button>
 </ion-toolbar>
 
 <ion-content *ngIf="loading$ | async">
@@ -24,7 +28,7 @@
               <span class="handle p-left">@{{ chirp!.creator ? chirp!.creator!.username : 'Unknown' }}</span>
               <ion-row>
                 <span
-                  class="handle">{{ chirp!.createdAt ? (chirp!.createdAt!.seconds | date : 'yyyy-MM-dd HH:mm') : '' }}</span>
+                  class="handle">{{ getDate(chirp!.createdAt) }}</span>
               </ion-row>
             </div>
             <div>
@@ -42,7 +46,8 @@
 
             <ion-textarea #myInput inputmode="text" maxlength="256" rows="1" class="text-justify "
                           [ngClass]="canEdit ? 'edit-chirp-textarea' : ''"
-                          [autoGrow]="true" [value]="chirp.content" (ionChange)="validateEdit(myInput.value)"></ion-textarea>
+                          [autoGrow]="true" [value]="chirp.content"
+                          (ionChange)="validateEdit(myInput.value)"></ion-textarea>
 
 
           </ion-col>
@@ -58,26 +63,13 @@
         <img class="preview-img" [src]="imageUrl" *ngIf="(chirp$ | async)?.imageUrl && !isEditor"
              alt="chirp attachment">
 
-        <ion-row>
-          <ion-row *ngIf="isEditor">
 
-            <ion-button (click)="update(chirp)" expand="block" color="primary" size="small">
-              <ion-icon name="checkmark-outline" slot="start"></ion-icon>
-              Update
-            </ion-button>
-          </ion-row>
-        </ion-row>
+
         <ion-row class="ion-justify-content-start">
           <ion-col>
             <ion-button fill="clear" color="medium" size="small">
               <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
-              {{ 25 }}
-            </ion-button>
-          </ion-col>
-          <ion-col>
-            <ion-button fill="clear" color="medium" [color]="true ? 'primary' : 'medium'" size="small">
-              <ion-icon name="repeat-outline" slot="start"></ion-icon>
-              {{ 5 }}
+              {{ chirp!.comments! ? chirp!.comments!.length : 0 }}
             </ion-button>
           </ion-col>
           <ion-col>
@@ -89,11 +81,46 @@
         </ion-row>
       </ion-col>
     </ion-row>
+    <ion-row *ngIf="isEditor">
+      <ion-accordion-group class="accordion">
+        <ion-accordion value="first">
+          <ion-item slot="header" color="light">
+            <ion-row class="audience-row">
+              <ion-text>
+                <ion-icon name="book"></ion-icon>
+                Readers : {{readerUsers.length}}
+              </ion-text>
+              <ion-text>
+                <ion-icon name="pencil"></ion-icon>
+                Editors : {{writerUsers.length}}
+              </ion-text>
+            </ion-row>
+
+          </ion-item>
+          <div class="ion-padding" slot="content" >
+            <ion-list lines="full" class="ion-margin-top">
+              <chirp-user class="ion-margin-top" *ngFor=" let user of (users$ | async)"
+                          [readerUsers]="readerUsers"
+                          [writerUsers]="writerUsers"
+                          [isPublic]="false"
+                          (addUserToReaders)="addToReaders(user)"
+                          (removeUserFromReaders)="removeFromReaders(user)"
+                          (addUserToWriters)="addToWriters(user)"
+                          (removeUserFromWriters)="removeFromWriters(user)"
+                          [user]="user"/>
+            </ion-list>
+          </div>
+        </ion-accordion>
+
+      </ion-accordion-group>
+    </ion-row>
     <chirp-comment-reply [id]="chirpId"/>
     <ion-list>
       <chirp-comment *ngFor="let comment of chirp.comments" [comment]="comment"
                      [isEditor]="isEditor"
       ></chirp-comment>
     </ion-list>
+
   </div>
+
 </ion-content>

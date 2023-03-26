@@ -8,9 +8,9 @@
   <ion-col  size="10" class="ion-padding-start">
     <ion-row class="tweet-info">
       <ion-col size="12" style="text-align: left">
-        <span class="name">Alice Lee</span>
-        <span class="handle">@alicelee</span>
-        <span class="handle">2022-10-05</span>
+        <span class="name">{{ chirp.creator!.firstname }} {{ chirp.creator!.lastname }}</span>
+        <span class="handle">@{{ chirp.creator!.username }}</span>
+        <span class="handle">{{ getDate(chirp!.createdAt) }}</span>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -24,15 +24,10 @@
       <ion-col>
         <ion-button fill="clear" color="medium" size="small">
           <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
-          {{ 25 }}
+          {{ chirp!.comments! ? chirp!.comments!.length : 0 }}
         </ion-button>
       </ion-col>
-      <ion-col>
-        <ion-button fill="clear" color="medium" [color]="true ? 'primary' : 'medium'" size="small">
-          <ion-icon name="repeat-outline" slot="start"></ion-icon>
-          {{ 5 }}
-        </ion-button>
-      </ion-col>
+
       <ion-col>
         <ion-button fill="clear" color="medium" [color]="true ? 'primary' : 'medium'" size="small">
           <ion-icon name="heart-outline" slot="start"></ion-icon>

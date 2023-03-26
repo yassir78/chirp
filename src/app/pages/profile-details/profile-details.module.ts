@@ -4,6 +4,7 @@ import { ProfileDetailsComponent} from "./profile-details.component";
 import {RouterModule} from "@angular/router";
 import {IonicModule} from "@ionic/angular";
 import { ReactiveFormsModule } from '@angular/forms';
+import {SharedModule} from "../../shared/shared.module";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ReactiveFormsModule } from '@angular/forms';
       }
     ]),
     IonicModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class ProfileDetailsModule {

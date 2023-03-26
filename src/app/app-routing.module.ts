@@ -16,11 +16,6 @@ const routes: Routes = [
     //...canActivate(redirectLoggedInToApp)
   },
   {
-    path: 'profile',
-    loadChildren: () => import('./pages/profile-details/profile-details.module').then(m => m.ProfileDetailsModule),
-    //...canActivate(redirectLoggedInToApp)
-  },
-  {
     path: '',
     redirectTo: 'app/home',
     pathMatch: 'full'

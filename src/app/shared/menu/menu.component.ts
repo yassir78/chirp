@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthFacade } from 'src/app/facades/auth.facade';
 import { User } from 'src/app/models/user';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-menu',
@@ -11,7 +12,9 @@ import { User } from 'src/app/models/user';
 export class MenuComponent implements OnInit {
   auth = inject(AuthFacade);
   connectedUser : Observable<User> | undefined;
-  activePage = "home";
+  activePage = "app/home";
+
+  router = inject(Router);
 
   constructor() { }
 
@@ -35,6 +38,7 @@ export class MenuComponent implements OnInit {
 
   async changePage(newPage: string) {
     this.activePage = newPage;
+    await this.router.navigate([newPage]);
   }
 
   async logoutUser() {

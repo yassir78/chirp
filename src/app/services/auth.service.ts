@@ -2,14 +2,15 @@ import {inject, Injectable} from "@angular/core";
 import {
   Auth,
   createUserWithEmailAndPassword,
-  sendEmailVerification,
+  sendEmailVerification, sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  signOut
+  signOut, updateCurrentUser, updateEmail,
+  updatePassword
 } from '@angular/fire/auth';
 import {LoginResponseDto} from "../dtos/response/LoginResponseDto";
 import {RegisterRequestDto} from "../dtos/request/RegisterRequestDto";
 import {RegisterResponseDto} from "../dtos/response/RegisterResponseDto";
-import {collectionData, doc, DocumentReference, Firestore, getDoc, getDocs} from "@angular/fire/firestore";
+import {collectionData, doc, DocumentReference, Firestore, getDoc, getDocs, updateDoc} from "@angular/fire/firestore";
 import {createNewDocument, isEntityExistsBy, isNotEntityExistsBy} from "../helpers/Utils";
 import {collection, query, where} from "@angular/fire/firestore";
 import {from, switchMap} from "rxjs";
@@ -36,6 +37,7 @@ export class AuthService {
         ...registerRequest,
       })
       await sendEmailVerification(userCredential.user);
+      console.log('mail send successfully to: ', userCredential.user?.email)
       response.user = {
         id: uid,
         ...registerRequest
@@ -75,7 +77,7 @@ export class AuthService {
   }
 
   private mapUser(userWithReferences: any): User {
-    const chirps : Chirp[] = [];
+    const chirps: Chirp[] = [];
     userWithReferences.chirps.forEach(async (chirpRef: DocumentReference) => {
       const path = chirpRef.path;
       const chirpDoc = await getDoc(doc(this.fr, path));
@@ -114,4 +116,26 @@ export class AuthService {
   }
 
 
+  async updateUser(param: { firstname: any; email: any; lastname: any; username: any, id: any }) {
+    console.log('param: ', param)
+    const user = this.auth.currentUser;
+    await this.updateUserInFirestore(param);
+    if (param.email !== user?.email) {
+      console.log('email changed: ', param.email)
+      await updateEmail(user!, param.email);
+      await sendPasswordResetEmail(this.auth, param.email)
+    }
+    await updateEmail(user!, param.email)
+  }
+
+  private async updateUserInFirestore(param: { firstname: any; email: any; lastname: any; username: any, id: any }) {
+    const userRef = doc(this.fr, `users/${param.id}`);
+    await updateDoc(userRef, {
+      firstname: param.firstname,
+      lastname: param.lastname,
+      username: param.username,
+      email: param.email,
+    });
+
+  }
 }

@@ -209,7 +209,7 @@ export class ChirpService {
         return combineLatest([
           this.mapChirpWithComments(chirp),
           this.mapReaders(chirp),
-          this.mapReaders(chirp),
+          this.mapWriters(chirp),
           this.mapChirpWithCreator(chirp)]).pipe(
           map(([comments, readers, writers, creator]) => {
             console.log('readers', readers);
@@ -231,7 +231,9 @@ export class ChirpService {
     const updatedParams = {
       content: chirp.content,
       imageUrl: chirp.imageUrl,
-      updatedAt: serverTimestamp()
+      readers: chirp.readers?.map((reader) => doc(this.fr, `users/${reader.id}`)),
+      writers: chirp.writers?.map((writer) => doc(this.fr, `users/${writer.id}`)),
+      updatedAt: serverTimestamp(),
     }
     console.log('updatedParams', updatedParams);
     return updateDoc(doc(this.fr, `chirps/${chirp.id}`), updatedParams);
@@ -255,7 +257,14 @@ export class ChirpService {
       const readers$: User[] = readersRef
         // @ts-ignore
         .map((readerRef: DocumentReference) => {
-          return docData<User>(readerRef);
+          return docData<User>(readerRef).pipe(
+            map((reader) => {
+              return {
+                id: readerRef.id,
+                ...reader
+              };
+            }
+          ));
         });
       return combineLatest(readers$);
     } else {
@@ -271,7 +280,14 @@ export class ChirpService {
       const writers$: User[] = writersRef
         // @ts-ignore
         .map((writersRef: DocumentReference) => {
-          return docData<User>(writersRef);
+          return docData<User>(writersRef).pipe(
+            map((writer) => {
+                return {
+                  id: writersRef.id,
+                  ...writer
+                };
+              }
+            ));
         });
       return combineLatest(writers$);
     } else {

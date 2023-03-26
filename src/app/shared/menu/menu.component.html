@@ -9,14 +9,17 @@
       </ion-label>
     </div>
     <ion-list class="menu-items" lines="none">
-      <ion-item [ngClass]="{active: activePage === 'home'}" (click)="changePage('home')">
-        <ion-icon name="home-outline"></ion-icon>Home
+      <ion-item [routerLink]="['/app/home']" [routerLinkActive]="'active'">
+        <ion-icon name="home-outline"></ion-icon>
+        Home
       </ion-item>
-      <ion-item [ngClass]="{active: activePage === 'details'}" (click)="changePage('details')">
-        <ion-icon name="person-outline"></ion-icon>Profile details
+      <ion-item [routerLink]="['/app/profile-details']" [routerLinkActive]="'active'">
+        <ion-icon name="person-outline"></ion-icon>
+        Profile details
       </ion-item>
       <ion-item (click)="logoutUser()">
-        <ion-icon name="exit-outline"></ion-icon>Sign out
+        <ion-icon name="exit-outline"></ion-icon>
+        Sign out
       </ion-item>
     </ion-list>
   </ion-content>

@@ -79,6 +79,10 @@ ion-textarea > div > div.native-textarea {
 
 
 }
+.header{
+  display: flex;
+  justify-content: space-between;
+}
 
 .toggle-delete {
   transform: scale(1.5);
@@ -91,4 +95,13 @@ ion-textarea > div > div.native-textarea {
 
 .return-icon {
   font-size: 1.5rem;
+}
+
+.accordion{
+  width: 100%;
+}
+
+.image-icon{
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
 }

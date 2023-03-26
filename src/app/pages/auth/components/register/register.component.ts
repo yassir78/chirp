@@ -91,6 +91,8 @@ export class RegisterComponent implements OnInit {
     this.cleanForm();
     if(response.error){
       await showAlert("Ops", getErrorMessage(response.error), this.alertController);
+    }else {
+      await this.router.navigateByUrl('/auth/welcome');
     }
   }
 

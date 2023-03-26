@@ -33,11 +33,13 @@ export class ChirpUserComponent implements OnInit {
   }
 
   handleAddToReadersToggle() {
+    this.addToReadersToggle = this.existsInReaders();
     this.addToReadersToggle ? this.removeUserFromReadersList(this.user!) : this.addUserToReadersList(this.user!);
     this.addToReadersToggle = !this.addToReadersToggle;
   }
 
   handleAddToWritersToggle() {
+    this.addToWritersToggle = this.existsInWriters();
     this.addToWritersToggle ? this.removeUserFromWriterList(this.user!) : this.addUserToWritersList(this.user!);
     this.addToWritersToggle = !this.addToWritersToggle;
   }
@@ -48,6 +50,7 @@ export class ChirpUserComponent implements OnInit {
   }
 
   removeUserFromWriterList(user: User) {
+    console.log('remove from writers')
     this.removeUserFromWriters.emit(user);
   }
 
@@ -57,11 +60,11 @@ export class ChirpUserComponent implements OnInit {
 
 
   existsInReaders() {
-    return this.readerUsers.includes(this.user!);
+    return this.readerUsers.map(user => user.email).includes(this.user!.email);
   }
 
   existsInWriters() {
-    return this.writerUsers.includes(this.user!);
+    return this.writerUsers.map(user => user.email).includes(this.user!.email);
   }
 
 }

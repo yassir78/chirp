@@ -12,6 +12,7 @@ import {ScrollingModule} from "@angular/cdk/scrolling";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ChirpListSkeletonComponent} from "./chirp-list-skeleton/chirp-list-skeleton.component";
 import {ChirpSkeletonComponent} from "./chirp-skeleton/chirp-skeleton.component";
+import {RouterLink, RouterLinkActive} from "@angular/router";
 
 
 @NgModule({
@@ -30,18 +31,21 @@ import {ChirpSkeletonComponent} from "./chirp-skeleton/chirp-skeleton.component"
     IonicModule,
     LazyLoadImageModule,
     ScrollingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterLinkActive,
+    RouterLink
 
   ],
-  exports: [
-    MenuComponent,
-    LogoComponent,
-    AvatarComponent,
-    HeaderComponent,
-    AddChirpComponent,
-    ChirpListSkeletonComponent,
-    ChirpSkeletonComponent
-  ]
+    exports: [
+        MenuComponent,
+        LogoComponent,
+        AvatarComponent,
+        HeaderComponent,
+        AddChirpComponent,
+        ChirpListSkeletonComponent,
+        ChirpSkeletonComponent,
+        ChirpUserComponent
+    ]
 })
 export class SharedModule {
 }
