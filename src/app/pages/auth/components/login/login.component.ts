@@ -1,10 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
-import {AlertController, isPlatform, LoadingController, ToastController} from "@ionic/angular";
+import {AlertController, isPlatform, LoadingController, ModalController, ToastController} from "@ionic/angular";
 import {Router} from "@angular/router";
 import {getErrorMessage, showAlert} from "../../../../helpers/Utils";
 import {AuthFacade} from "../../../../facades/auth.facade";
 import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
+import {ForgotPasswordComponent} from "../../../../shared/forgot-password/forgot-password.component";
+import {AddChirpComponent} from "../../../../shared/add-chirp/add-chirp.component";
 
 const emailValidators = [Validators.required, Validators.email];
 const passwordValidators = Validators.required;
@@ -20,6 +22,9 @@ export class LoginComponent implements OnInit {
     email: ['', emailValidators],
     password: ['', passwordValidators]
   });
+
+  private modalCtrl = inject(ModalController);
+  private toastCtrl = inject(ToastController);
 
   constructor(private fb: FormBuilder,
               private loadingController: LoadingController,
@@ -63,7 +68,22 @@ export class LoginComponent implements OnInit {
   }
 
   async forgotPassword() {
-    await this.authFacade.handleForgotPassword()
+    const modal = await this.modalCtrl.create({
+      component: ForgotPasswordComponent,
+    });
+    await modal.present();
+    const {role} = await modal.onWillDismiss();
+    if (role === 'return') {
+      await modal.dismiss();
+    }
+    if (role === 'success') {
+      const toast = await this.toastCtrl.create({
+        message: 'Chirp added successfully!',
+        duration: 3000,
+        color: 'success'
+      });
+      await toast.present();
+    }
   }
 
   private cleanForm() {
@@ -74,7 +94,6 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.cleanForm();
   }
-
 
 
 }

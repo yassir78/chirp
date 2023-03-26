@@ -7,6 +7,7 @@ import {AddChirpComponent} from "../../shared/add-chirp/add-chirp.component";
 import {ChirpFacade} from "../../facades/chirp.facade";
 import {ChirpService} from "../../services/chirp.service";
 import {Chirp} from "../../models/chirp";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -27,10 +28,16 @@ export class HomePage implements OnInit {
   chirpsWhereConnectedUserIsReaderOrWriter: Observable<Chirp[]> | undefined;
   chirpsWhereConnectedUserIsCreator: Observable<Chirp[]> | undefined;
   chirps: Observable<Chirp> | undefined;
+
+  route = inject(ActivatedRoute);
+
+  router = inject(Router);
+
   constructor() {
   }
 
   ngOnInit() {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.chirpFacade.getAllChirpsWhereConnectedUserIsReaderOrWriter();
     this.chirpFacade.getAllChirpsWhereConnectedUserIsCreator();
     this.connectedUser = this.auth.getCurrentUser();
@@ -39,6 +46,7 @@ export class HomePage implements OnInit {
     this.chirpsWhereConnectedUserIsReaderOrWriter = this.chirpFacade.getChirpsWhereConnectedUserIsReaderOrWriter();
     this.chirpsWhereConnectedUserIsCreator = this.chirpFacade.getChirpsWhereConnectedUserIsCreator();
   }
+
 
   async openModal() {
     const modal = await this.modalCtrl.create({

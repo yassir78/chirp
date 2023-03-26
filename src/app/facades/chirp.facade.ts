@@ -64,7 +64,7 @@ export class ChirpFacade {
 
 
   getAllChirpsWhereConnectedUserIsReaderOrWriter() {
-    this.authState.getCurrentUser().subscribe(user => {
+     this.authState.getCurrentUser().subscribe(user => {
       if (!user) return;
       this.chirpState.isChirpsWhereConnectedUserIsReaderOrWriterLoading = true;
       this.getAllChirpsWhereConnectedUserIsReaderOrWriterSubscription = this.chirpService.findAllChirpsWhereUserIsWriterOrReader(user!.id!).subscribe(chirps => {
@@ -90,7 +90,6 @@ export class ChirpFacade {
   getChirpById(id: string) {
     this.chirpService.findChirpById(id).subscribe(chirp => {
       this.chirpState.isChirpDetailLoading = true;
-      console.log('chirp', chirp)
       this.chirpState.chirpDetail = <Chirp>chirp;
       this.chirpState.isChirpDetailLoading = false;
     });

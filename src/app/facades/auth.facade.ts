@@ -4,7 +4,6 @@ import {AuthService} from "../services/auth.service";
 import {combineLatest, map, Observable, of, Subscriber, Subscription, switchMap, take} from "rxjs";
 import {Router} from "@angular/router";
 import {RegisterRequestDto} from "../dtos/request/RegisterRequestDto";
-import {setIntervalAsync} from "set-interval-async";
 import {
   Auth,
   GoogleAuthProvider,
@@ -31,19 +30,17 @@ export class AuthFacade {
   private chirpFacade = inject(ChirpFacade);
   private toastController = inject(ToastController);
   subscriber: Subscription;
+  googleSubscriber: Subscription | undefined;
 
   constructor(private authService: AuthService, private authState: AuthState, private router: Router) {
     this.subscriber = new Observable((subscriber) => {
       onAuthStateChanged(this.auth, (user) => {
-          console.log('this is an authentication');
-          console.log(user)
           subscriber.next(user);
         }
       )
     }).pipe(
       switchMap((user: any) => this.getFireStoreUser(user?.email!).pipe(
         map((fireStoreUser: User) => {
-            console.log('fireStoreUser', fireStoreUser)
             return {
               ...user,
               ...fireStoreUser
@@ -52,7 +49,7 @@ export class AuthFacade {
         )
       ))).subscribe(async (user) => {
       combineLatest([this.getIsDoneRegister(), this.getIsDoneLogin()]).subscribe(async ([isDoneRegister, isDoneLogin]) => {
-        console.log('isDoneRegister', isDoneRegister)
+        console.log('ana henna')
         await this.handleUserVerification(user, isDoneRegister, isDoneLogin);
       });
     });
@@ -60,19 +57,19 @@ export class AuthFacade {
   }
 
   getFireStoreUser(email: string): Observable<User> {
-    console.log('getFireStoreUser', email)
     if (email === undefined) {
       return of({} as User)
     } else {
+      console.log('email: ', email);
       return this.authService.getUserByEmail(email);
 
     }
   }
 
   async login(email: string, password: string) {
+    await signOut(this.auth);
     this.setIsDoneLogin(false);
     const result = await this.authService.login(email, password);
-    console.log('login is done')
     this.setIsDoneLogin(true);
     return result;
   }
@@ -107,15 +104,15 @@ export class AuthFacade {
 
 
   async handleUserVerification(user: any, isDoneRegister: Boolean, isDoneLogin: Boolean) {
-    console.log('handleUserVerification', isDoneRegister, isDoneLogin)
+    console.log('logged user: ', user);
+    console.log('isDoneRegister: ', isDoneRegister);
+    console.log('isDoneLogin: ', isDoneLogin);
     if (!user.email || !isDoneRegister || !isDoneLogin) {
       return;
     }
-    const {creationTime, lastSignInTime} = this.auth.currentUser!.metadata!;
+    const {creationTime, lastSignInTime} = this.auth.currentUser!.metadata;
     const isFirstLogin = Date.parse(creationTime!) === Date.parse(lastSignInTime!);
     const isEmailNotVerified = !this.auth.currentUser!.emailVerified;
-    console.log('isFirstLogin', isFirstLogin)
-    console.log('isEmailNotVerified', isEmailNotVerified)
     if (isEmailNotVerified) {
       const url = isFirstLogin ? '/auth/welcome' : '/auth/login';
       await this.router.navigate([url]);
@@ -124,7 +121,6 @@ export class AuthFacade {
       }
       await signOut(this.auth);
     } else {
-      console.log('user', user)
       this.setCurrentUser(user);
       await this.router.navigate(['/app/home']);
     }
@@ -140,9 +136,12 @@ export class AuthFacade {
   }
 
   async logout() {
-    this.subscriber.unsubscribe();
+    //this.subscriber.unsubscribe();
     this.userFacade.unsubscribe();
     this.chirpFacade.unsubscribe();
+    if(this.googleSubscriber !== undefined) {
+      this.googleSubscriber.unsubscribe();
+    }
     await this.authService.logout();
     await this.router.navigate(['/auth/login']);
   }
@@ -166,8 +165,7 @@ export class AuthFacade {
       });
       this.setIsDoneGoogleRegister(true);
     }
-    await this.auth.currentUser?.reload();
-    this.getFireStoreUser(user?.email!).pipe(
+    this.googleSubscriber = this.getFireStoreUser(user?.email!).pipe(
       map((fireStoreUser: User) => {
           return {
             ...user,
@@ -176,19 +174,18 @@ export class AuthFacade {
         }
       )
     ).subscribe(async (user) => {
-      combineLatest([this.getIsDoneRegister(), this.getIsDoneLogin()]).subscribe(async ([isDoneRegister, isDoneLogin]) => {
+      combineLatest([this.getIsDoneRegister().pipe(take(1)), this.getIsDoneLogin().pipe(take(1))]).subscribe(async ([isDoneRegister, isDoneLogin]) => {
         await this.handleUserVerification(user, isDoneRegister, isDoneLogin);
         await this.router.navigate(['/app/home']);
       });
     });
   }
 
-  async handleForgotPassword() {
-    await sendPasswordResetEmail(this.auth, 'yassir.acaf@gmail.com');
+  async handleForgotPassword(email: string) {
+    await sendPasswordResetEmail(this.auth, email);
   }
 
   private async handleEmailIsNotVerified(user: any) {
-    console.log('handleEmailIsNotVerified', user)
     const toast = await this.toastController.create({
       message: `Your email ${user.email} is not verified`,
       duration: 7000,
@@ -215,9 +212,7 @@ export class AuthFacade {
                      email,
                    }: { firstname: any, lastname: any, username: any, email: any }) {
     const user = await this.getCurrentUser().pipe(take(1)).toPromise();
-    console.log('updateUser', user)
     const id = user!.id;
-    console.log('updateUser', id)
     return await this.authService.updateUser({firstname, lastname, username, email, id});
 
 

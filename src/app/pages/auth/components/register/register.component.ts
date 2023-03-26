@@ -87,7 +87,6 @@ export class RegisterComponent implements OnInit {
       lastname: this.lastname!.value!,
     });
     await loading.dismiss();
-    console.log('loader is dissmissed');
     this.cleanForm();
     if(response.error){
       await showAlert("Ops", getErrorMessage(response.error), this.alertController);

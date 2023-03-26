@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {Chirp} from "../../models/chirp";
 import {ChirpFacade} from "../../facades/chirp.facade";
 import {ActivatedRoute, Router} from "@angular/router";
-import {combineLatest, Observable} from "rxjs";
+import {combineLatest, map, Observable, switchMap} from "rxjs";
 import {User} from "../../models/user";
 import {AuthState} from "../../states/auth.state";
 import {AlertController, ToastController} from "@ionic/angular";
@@ -39,6 +39,8 @@ export class ChirpDetailsComponent implements OnInit {
   text: string = '';
   users$: Observable<User[]> | undefined;
 
+  private route:ActivatedRoute = inject(ActivatedRoute);
+
   public readerUsers: User[] = [];
   public writerUsers: User[] = [];
 
@@ -46,41 +48,61 @@ export class ChirpDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userFacade.getAllUsers();
-    this.chirpId = this.activeRouterSnapshot.params['id'];
-    this.chirpFacade.getChirpById(this.chirpId);
-    this.chirp$ = this.chirpFacade.getChirpDetail();
-    this.loading$ = this.chirpFacade.getIsChirpDetailLoading();
-    this.connectedUser$ = this.authState.getCurrentUser();
-    this.chirp$.subscribe(chirp => {
-      this.imageUrl = chirp?.imageUrl;
-      this.text = chirp?.content ?? '';
-    })
-    this.users$ = this.userFacade.getUsers();
-
-    this.chirp$.subscribe(chirp => {
-      if(chirp?.readers === undefined || chirp?.writers === undefined) {
-        this.readerUsers = [];
-        this.writerUsers = [];
-        return;
-      }
-      this.readerUsers = chirp?.readers ?? [];
-      this.writerUsers = chirp?.writers ?? [];
-    });
-    const chirpAndConnectedUser$ = combineLatest([this.chirp$, this.connectedUser$]);
-    chirpAndConnectedUser$.subscribe(([chirp, connectedUser]) => {
-      if (chirp?.creator?.email && connectedUser?.email) {
-        if (chirp.creator.email === connectedUser.email) {
-          this.isEditor = true;
-          console.log('Chirp creator and connected user have the same email:', chirp.creator.email);
-        } else if (chirp.writers!.map(writer => writer.email).includes(connectedUser.email)) {
-          console.log('dazdzadza')
-          this.isEditor = true;
+    this.route.params.subscribe(params => {
+      console.log('ngOnInit()');
+      this.userFacade.getAllUsers();
+      this.chirpId = params['id'];
+      this.chirpFacade.getChirpById(this.chirpId);
+      this.chirp$ = this.chirpFacade.getChirpDetail();
+      this.loading$ = this.chirpFacade.getIsChirpDetailLoading();
+      this.connectedUser$ = this.authState.getCurrentUser();
+      this.chirp$.subscribe(chirp => {
+        console.log('chirp subscribe')
+        this.imageUrl = chirp?.imageUrl;
+        this.text = chirp?.content ?? '';
+      })
+      this.users$ = this.chirp$.pipe(
+        switchMap(chirp => {
+            const creator = chirp?.creator;
+            return this.userFacade.getUsers().pipe(
+              map(users => {
+                return users.filter(user => user.email !== creator?.email);
+              })
+            )
+          }
+        ));
+      this.chirp$.subscribe(chirp => {
+        if (chirp?.readers === undefined || chirp?.writers === undefined) {
+          this.readerUsers = [];
+          this.writerUsers = [];
+          return;
         }
-      } else {
-        console.log('Chirp or connected user is null or undefined');
-      }
-    });
+        this.readerUsers = chirp?.readers ?? [];
+        this.writerUsers = chirp?.writers ?? [];
+      });
+      const chirpAndConnectedUser$ = combineLatest([this.chirp$, this.connectedUser$]);
+      chirpAndConnectedUser$.subscribe(([chirp, connectedUser]) => {
+        console.log('chirpAndConnectedUser$ subscribe')
+        console.log('chirp:', chirp);
+        console.log('connectedUser:', connectedUser)
+        if (chirp?.creator?.email && connectedUser?.email) {
+          if (chirp.creator.email === connectedUser.email) {
+            this.isEditor = true;
+            console.log('Chirp creator and connected user have the same email:', chirp.creator.email);
+          } else if (chirp.writers!.map(writer => writer.email).includes(connectedUser.email)) {
+            this.isEditor = true;
+          } else {
+            this.isEditor = false;
+            console.log('Chirp creator and connected user have different emails:', chirp.creator.email);
+          }
+        } else {
+          console.log('Chirp or connected user is null or undefined');
+        }
+      });
+
+
+
+    })
 
   }
 
@@ -125,7 +147,7 @@ export class ChirpDetailsComponent implements OnInit {
     this.text = value;
   }
 
-  async update(chirp:Chirp){
+  async update(chirp: Chirp) {
     const alert = await this.alertCtrl.create({
       header: 'Do you want to edit this chirp?',
       buttons: [
@@ -166,7 +188,7 @@ export class ChirpDetailsComponent implements OnInit {
   }
 
   getDate(date: any) {
-    if(date === undefined) return '';
+    if (date === undefined) return '';
     const d = new Date(date.seconds * 1000);
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -191,7 +213,7 @@ export class ChirpDetailsComponent implements OnInit {
   }
 
   addToReaders(user: any) {
-    if(this.readerUsers.find(u => u.email === user.email)) {
+    if (this.readerUsers.find(u => u.email === user.email)) {
       return;
     }
     this.readerUsers = [...this.readerUsers, user];
@@ -202,7 +224,7 @@ export class ChirpDetailsComponent implements OnInit {
   }
 
   addToWriters(user: any) {
-    if(this.writerUsers.find(u => u.email === user.email)) return;
+    if (this.writerUsers.find(u => u.email === user.email)) return;
     this.writerUsers = [...this.writerUsers, user];
   }
 

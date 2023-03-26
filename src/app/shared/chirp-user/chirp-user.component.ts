@@ -50,7 +50,6 @@ export class ChirpUserComponent implements OnInit {
   }
 
   removeUserFromWriterList(user: User) {
-    console.log('remove from writers')
     this.removeUserFromWriters.emit(user);
   }
 

@@ -32,12 +32,10 @@ export class AuthService {
       await this.validate(registerRequest);
       const userCredential = await createUserWithEmailAndPassword(this.auth, registerRequest.email, registerRequest.password);
       const uid = userCredential.user?.uid;
-      console.log('uid: ', uid)
       await this.createNewUser(uid, {
         ...registerRequest,
       })
       await sendEmailVerification(userCredential.user);
-      console.log('mail send successfully to: ', userCredential.user?.email)
       response.user = {
         id: uid,
         ...registerRequest
@@ -117,11 +115,9 @@ export class AuthService {
 
 
   async updateUser(param: { firstname: any; email: any; lastname: any; username: any, id: any }) {
-    console.log('param: ', param)
     const user = this.auth.currentUser;
     await this.updateUserInFirestore(param);
     if (param.email !== user?.email) {
-      console.log('email changed: ', param.email)
       await updateEmail(user!, param.email);
       await sendPasswordResetEmail(this.auth, param.email)
     }

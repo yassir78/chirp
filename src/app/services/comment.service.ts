@@ -46,9 +46,6 @@ export class CommentService {
   }
 
   async delete(comment: Comment) {
-    // update chirp comments
-    console.log(comment)
-    console.log(comment.chirp!.id)
     await updateDoc(doc(this.fr, `chirps/${comment.chirp!.id}`), {
       comments: arrayRemove(doc(this.fr, `comments/${comment.id}`))
     });

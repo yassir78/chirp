@@ -52,7 +52,6 @@ export class ChirpCommentComponent implements OnInit {
 
     await alert.present();
     const {role} = await alert.onDidDismiss();
-    console.log('onDidDismiss resolved with role', role);
     if (role === 'confirm') {
       const toast = await this.toastCtrl.create({
         message: 'Comment deleted successfully',
@@ -89,7 +88,6 @@ export class ChirpCommentComponent implements OnInit {
 
     await alert.present();
     const {role} = await alert.onDidDismiss();
-    console.log('onDidDismiss resolved with role', role);
     if (role === 'confirm') {
       const toast = await this.toastCtrl.create({
         message: 'Comment updated successfully',

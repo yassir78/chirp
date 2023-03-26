@@ -45,7 +45,6 @@ export class AddChirpComponent implements OnInit {
   }
 
   return() {
-    console.log('return')
     return this.modalCtrl.dismiss(null, 'return');
   }
 
@@ -79,7 +78,6 @@ export class AddChirpComponent implements OnInit {
       writers: this.writerUsers,
       readers: this.readerUsers,
     });
-    console.log('submitted')
     await loading.dismiss();
     return this.modalCtrl.dismiss(null, 'success');
   }
@@ -100,7 +98,6 @@ export class AddChirpComponent implements OnInit {
   }
 
   addToWriters(user: User) {
-    console.log('add to writers')
     if(this.writerUsers.find(u => u.id === user.id)) return;
     this.writerUsers = [...this.writerUsers, user];
   }

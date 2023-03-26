@@ -9,10 +9,11 @@ import {HeaderComponent} from "./header/header.component";
 import {AddChirpComponent} from "./add-chirp/add-chirp.component";
 import {ChirpUserComponent} from "./chirp-user/chirp-user.component";
 import {ScrollingModule} from "@angular/cdk/scrolling";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ChirpListSkeletonComponent} from "./chirp-list-skeleton/chirp-list-skeleton.component";
 import {ChirpSkeletonComponent} from "./chirp-skeleton/chirp-skeleton.component";
 import {RouterLink, RouterLinkActive} from "@angular/router";
+import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
     AddChirpComponent,
     ChirpUserComponent,
     ChirpListSkeletonComponent,
-    ChirpSkeletonComponent
+    ChirpSkeletonComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     CommonModule,
@@ -33,19 +35,21 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
     ScrollingModule,
     ReactiveFormsModule,
     RouterLinkActive,
-    RouterLink
+    RouterLink,
+    FormsModule
 
   ],
-    exports: [
-        MenuComponent,
-        LogoComponent,
-        AvatarComponent,
-        HeaderComponent,
-        AddChirpComponent,
-        ChirpListSkeletonComponent,
-        ChirpSkeletonComponent,
-        ChirpUserComponent
-    ]
+  exports: [
+    MenuComponent,
+    LogoComponent,
+    AvatarComponent,
+    HeaderComponent,
+    AddChirpComponent,
+    ChirpListSkeletonComponent,
+    ChirpSkeletonComponent,
+    ChirpUserComponent,
+    ForgotPasswordComponent
+  ]
 })
 export class SharedModule {
 }

@@ -16,7 +16,7 @@ import {
   orderBy,
   updateDoc
 } from "@angular/fire/firestore";
-import {combineLatest, map, Observable, of, switchMap} from "rxjs";
+import {combineLatest, distinctUntilChanged, map, Observable, of, switchMap} from "rxjs";
 import {User} from "../models/user";
 import {query, where} from "@firebase/firestore";
 import {Chirp} from "../models/chirp";
@@ -104,9 +104,16 @@ export class ChirpService {
 
     return combineLatest([collectionData$1, collectionData$2]).pipe(
       switchMap(async ([chirps1, chirps2]) => {
-          return this.mapChirpsWithCreator([...chirps1, ...chirps2]);
-        }
-      )
+        const uniqueChirps = [...chirps1, ...chirps2].filter(
+          (chirp, index, self) =>
+            index ===
+            self.findIndex(
+              (c) => c!['id'] === chirp!['id']
+            )
+        );
+        return this.mapChirpsWithCreator(uniqueChirps);
+      }),
+      distinctUntilChanged()
     );
   }
 
@@ -212,8 +219,6 @@ export class ChirpService {
           this.mapWriters(chirp),
           this.mapChirpWithCreator(chirp)]).pipe(
           map(([comments, readers, writers, creator]) => {
-            console.log('readers', readers);
-            console.log('creator', creator)
             return {
               ...chirp,
               comments,
@@ -235,7 +240,6 @@ export class ChirpService {
       writers: chirp.writers?.map((writer) => doc(this.fr, `users/${writer.id}`)),
       updatedAt: serverTimestamp(),
     }
-    console.log('updatedParams', updatedParams);
     return updateDoc(doc(this.fr, `chirps/${chirp.id}`), updatedParams);
   }
 

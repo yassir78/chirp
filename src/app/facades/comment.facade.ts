@@ -14,7 +14,6 @@ export class CommentFacade {
   private commentState = inject(CommentState);
 
   async create({comment, chirpId}: { comment: string, chirpId: string }) {
-    console.log(comment);
     this.setIsAddLoading(true);
     const user = this.authState.getCurrentUserValue();
     const commentRef = await this.commentService.create(comment, chirpId, user.uid);
