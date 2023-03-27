@@ -37,13 +37,13 @@ import {ActivatedRoute, Router} from "@angular/router";
   }
 
   ionViewWillEnter() {
-
+    this.chirpFacade.getAllChirpsWhereConnectedUserIsReaderOrWriter();
+    this.chirpFacade.getAllChirpsWhereConnectedUserIsCreator();
   }
   ngOnInit() {
     console.log('home ngOnInit()');
     this.connectedUser = this.auth.getCurrentUser();
-    this.chirpFacade.getAllChirpsWhereConnectedUserIsReaderOrWriter();
-    this.chirpFacade.getAllChirpsWhereConnectedUserIsCreator();
+
     this.isLoadingChirpsWhereConnectedUserIsReaderOrWriter$ = this.chirpFacade.getIsChirpsWhereConnectedUserIsReaderOrWriterLoading();
     this.isLoadingChirpsWhereConnectedUserIsCreator$ = this.chirpFacade.getIsChirpsWhereConnectedUserIsCreatorLoading();
     this.chirpsWhereConnectedUserIsReaderOrWriter = this.chirpFacade.getChirpsWhereConnectedUserIsReaderOrWriter();

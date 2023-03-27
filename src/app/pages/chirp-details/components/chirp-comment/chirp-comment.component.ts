@@ -61,6 +61,17 @@ export class ChirpCommentComponent implements OnInit {
     }
   }
 
+  getDate(date: any) {
+    if (date === undefined) return '';
+    const d = new Date(date.seconds * 1000);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  }
+
   async validateEdit(value: any, comment: any) {
     const alert = await this.alertCtrl.create({
       header: 'Do you want to edit this comment?',
