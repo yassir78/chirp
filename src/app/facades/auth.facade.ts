@@ -122,6 +122,10 @@ export class AuthFacade {
       await signOut(this.auth);
     } else {
       this.setCurrentUser(user);
+      this.chirpFacade.getAllChirpsWhereConnectedUserIsReaderOrWriter();
+      this.chirpFacade.getAllChirpsWhereConnectedUserIsCreator();
+      console.log('m loading chirps')
+
       await this.router.navigate(['/app/home']);
     }
   }

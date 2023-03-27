@@ -18,6 +18,9 @@ export class ChirpFacade {
   getAllChirpsWhereConnectedUserIsCreatorSubscription: Subscription | undefined;
   getAllChirpsWhereConnectedUserIsReaderOrWriterSubscription: Subscription | undefined;
 
+  authSubscription1: Subscription | undefined;
+  authSubscription2: Subscription | undefined;
+
 
   async save({
                content,
@@ -64,7 +67,7 @@ export class ChirpFacade {
 
 
   getAllChirpsWhereConnectedUserIsReaderOrWriter() {
-     this.authState.getCurrentUser().subscribe(user => {
+    this.authSubscription1 = this.authState.getCurrentUser().subscribe(user => {
       if (!user) return;
       this.chirpState.isChirpsWhereConnectedUserIsReaderOrWriterLoading = true;
       this.getAllChirpsWhereConnectedUserIsReaderOrWriterSubscription = this.chirpService.findAllChirpsWhereUserIsWriterOrReader(user!.id!).subscribe(chirps => {
@@ -76,7 +79,7 @@ export class ChirpFacade {
   }
 
   getAllChirpsWhereConnectedUserIsCreator() {
-    this.authState.getCurrentUser().subscribe(user => {
+    this.authSubscription2 = this.authState.getCurrentUser().subscribe(user => {
       this.chirpState.isChirpsWhereConnectedUserIsCreatorLoading = true;
       this.getAllChirpsWhereConnectedUserIsCreatorSubscription = this.chirpService.findAllChirpsWhereUserIsCreator(user!.id!).subscribe(chirps => {
         this.chirpState.chirpsWhereConnectedUserIsCreator = chirps;
@@ -95,12 +98,12 @@ export class ChirpFacade {
     });
   }
 
-  async deleteChirp(chirp: Chirp,chirpId: string) {
-    await this.chirpService.deleteChirp(chirp,chirpId);
+  async deleteChirp(chirp: Chirp, chirpId: string) {
+    await this.chirpService.deleteChirp(chirp, chirpId);
   }
 
   async updateChirp(chirp: Chirp) {
-   await this.chirpService.updateChirp(chirp);
+    await this.chirpService.updateChirp(chirp);
   }
 
   getChirpDetail() {
@@ -117,6 +120,13 @@ export class ChirpFacade {
     }
     if (this.getAllChirpsWhereConnectedUserIsCreatorSubscription) {
       this.getAllChirpsWhereConnectedUserIsCreatorSubscription.unsubscribe();
+    }
+    if (this.authSubscription1) {
+      this.authSubscription1.unsubscribe();
+    }
+
+    if (this.authSubscription2) {
+      this.authSubscription2.unsubscribe();
     }
   }
 }

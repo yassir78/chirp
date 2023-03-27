@@ -232,7 +232,7 @@ export class ChirpService {
     );
   }
 
-  updateChirp(chirp: Chirp) {
+    updateChirp(chirp: Chirp) {
     const updatedParams = {
       content: chirp.content,
       imageUrl: chirp.imageUrl,

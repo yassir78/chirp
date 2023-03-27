@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {User} from "../../models/user";
 import {AuthFacade} from "../../facades/auth.facade";
-import {ModalController, ToastController} from "@ionic/angular";
+import {ModalController, ToastController, ViewWillEnter} from "@ionic/angular";
 import {AddChirpComponent} from "../../shared/add-chirp/add-chirp.component";
 import {ChirpFacade} from "../../facades/chirp.facade";
 import {ChirpService} from "../../services/chirp.service";
@@ -14,7 +14,7 @@ import {ActivatedRoute, Router} from "@angular/router";
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit {
+  export class HomePage implements OnInit,ViewWillEnter {
   segment = 'home';
 
   auth = inject(AuthFacade);
@@ -36,11 +36,14 @@ export class HomePage implements OnInit {
   constructor() {
   }
 
+  ionViewWillEnter() {
+
+  }
   ngOnInit() {
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    console.log('home ngOnInit()');
+    this.connectedUser = this.auth.getCurrentUser();
     this.chirpFacade.getAllChirpsWhereConnectedUserIsReaderOrWriter();
     this.chirpFacade.getAllChirpsWhereConnectedUserIsCreator();
-    this.connectedUser = this.auth.getCurrentUser();
     this.isLoadingChirpsWhereConnectedUserIsReaderOrWriter$ = this.chirpFacade.getIsChirpsWhereConnectedUserIsReaderOrWriterLoading();
     this.isLoadingChirpsWhereConnectedUserIsCreator$ = this.chirpFacade.getIsChirpsWhereConnectedUserIsCreatorLoading();
     this.chirpsWhereConnectedUserIsReaderOrWriter = this.chirpFacade.getChirpsWhereConnectedUserIsReaderOrWriter();

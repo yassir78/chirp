@@ -13,18 +13,18 @@ const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
-    //...canActivate(redirectLoggedInToApp)
+    ...canActivate(redirectLoggedInToApp)
   },
   {
     path: '',
-    redirectTo: 'app/home',
+    redirectTo: 'auth/login',
     pathMatch: 'full'
   }
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})
+    RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules,onSameUrlNavigation: 'reload'})
   ],
   exports: [RouterModule]
 })

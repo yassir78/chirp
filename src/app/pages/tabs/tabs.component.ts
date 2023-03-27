@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
+import {ViewWillEnter} from "@ionic/angular";
+import {ChirpFacade} from "../../facades/chirp.facade";
 
 @Component({
   selector: 'app-tabs',
@@ -9,6 +11,10 @@ export class TabsComponent implements OnInit {
 
   constructor() { }
 
+
+
   ngOnInit() {}
+
+
 
 }
